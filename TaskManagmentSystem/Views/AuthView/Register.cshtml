@@ -1,0 +1,54 @@
+﻿<div class="d-flex justify-content-center">
+    <div class="card mb-0 w-50">
+        <div class="card-body">
+            <div class="auth-full-page-content rounded d-flex p-3 my-2">
+                <div class="w-100">
+                    <div class="d-flex flex-column h-100">
+                        <div class="auth-content my-auto">
+                            <div class="text-center">
+                                <h5 class="mb-0">First Time !!</h5>
+                                <p class="text-muted mt-2">Sign Up to continue.</p>
+                            </div>
+                            <form class="mt-4 pt-2" asp-controller="Auth" asp-action="RegisterUser">
+                                <div class="form-floating form-floating-custom mb-4">
+                                    <input type="text" class="form-control" id="input-username" name="Username" placeholder="Enter User Name">
+                                    <label for="input-username">Username</label>
+                                </div>
+
+                                <div class="form-floating form-floating-custom mb-4">
+                                    <input type="text" class="form-control" id="input-firstname" name="FirstName" placeholder="Enter First Name">
+                                    <label for="input-firstname">First Name</label>
+                                </div>
+
+                                <div class="form-floating form-floating-custom mb-4">
+                                    <input type="text" class="form-control" id="input-lastname" name="LastName" placeholder="Enter Last Name">
+                                    <label for="input-lastnameinput-lastname">Last Name</label>
+                                </div>
+
+                                <div class="form-floating form-floating-custom mb-4 auth-pass-inputgroup">
+                                    <input type="text" class="form-control pe-5" id="input-email" name="Email" placeholder="Enter Email">
+                                    <label for="input-email">Email</label>
+                                </div>
+
+                                <div class="form-floating form-floating-custom mb-4 auth-pass-inputgroup">
+                                    <input type="password" class="form-control pe-5" id="password-input" name="PasswordHash" placeholder="Enter Password">
+                                    <label for="password-input">Password</label>
+                                </div>
+
+                                <div class="mb-3">
+                                    <button class="btn btn-primary w-100 waves-effect waves-light" type="submit">Sign Up</button>
+                                </div>
+                            </form>
+                            <div class="mt-4 pt-3 text-center">
+                                <p class="text-muted mb-0">
+                                    have an account ? <a href="@Url.Action("Login", "Auth")"
+                                                         class="text-primary fw-semibold"> Login now </a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

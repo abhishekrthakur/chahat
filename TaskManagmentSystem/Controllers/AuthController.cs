@@ -1,10 +1,19 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AspNetCoreHero.ToastNotification.Abstractions;
+using Microsoft.AspNetCore.Mvc;
 using TaskManagmentSystem.Models;
+using TaskManagmentSystem.Repositories;
 
 namespace TaskManagmentSystem.Controllers
 {
     public class AuthController : Controller
     {
+        private readonly UserRepository _userRepository;
+        private readonly INotyfService _toastNotification;
+        public AuthController(UserRepository userRepository, INotyfService toastNotification)
+        {
+            _userRepository = userRepository;
+            _toastNotification = toastNotification;
+        }
         public IActionResult Login()
         {
             return View("~/Views/AuthView/Login.cshtml");
@@ -17,7 +26,11 @@ namespace TaskManagmentSystem.Controllers
 
         public IActionResult AuthenticateUser(string userName, string password)
         {
-            // add auth repo
+            var user = _userRepository.GetUserByUserName(userName);
+            if(user == null)
+            {
+                _toastNotification.Success("rebrtb");
+            }
             return View("~/Views/AuthView/Login.cshtml");
         }
 

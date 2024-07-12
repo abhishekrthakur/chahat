@@ -13,7 +13,7 @@
 <div class="row px-2 my-3 card-gap">
     @foreach (var task in Model.AssignedToMe)
     {
-        <div class="card border-1 rounded-1 shadow dashboard-card">
+        <div class="card border-1 rounded-1 shadow dashboard-card" data-id=@task.TaskId onclick="redirectToDetails(@task.TaskId)">
             <div class="card-body px-2 py-3">
                 <div class="d-flex align-items-start border-bottom pb-3">
                     <div class="flex-grow-1 align-self-center overflow-hidden">
@@ -36,7 +36,7 @@
 <div class="row px-2 my-3 card-gap">
     @foreach (var task in Model.TeamMatesTasks)
     {
-        <div class="card border-1 rounded-1 shadow dashboard-card">
+        <div class="card border-1 rounded-1 shadow dashboard-card" data-id=@task.TaskId onclick="redirectToDetails(@task.TaskId)">
             <div class="card-body px-2 py-3">
                 <div class="d-flex align-items-start border-bottom pb-3">
                     <div class="flex-grow-1 align-self-center overflow-hidden">
@@ -59,4 +59,9 @@
     document.getElementById("goToAddTask").onclick = function () {
         window.location.href = '@Url.Action("CreateTask", "Task")';
     };
+
+    function redirectToDetails(id) {
+        console.log("click");
+        window.location.href = '@Url.Action("DetailView", "Task", new { id = "__id__" })'.replace("__id__", id);
+    }
 </script>

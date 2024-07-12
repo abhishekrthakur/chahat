@@ -1,5 +1,7 @@
 ﻿using AspNetCoreHero.ToastNotification.Abstractions;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
+using System.Reflection.Metadata;
 using TaskManagmentSystem.Constants;
 using TaskManagmentSystem.DTO;
 using TaskManagmentSystem.Models;
@@ -22,7 +24,7 @@ namespace TaskManagmentSystem.Controllers
         public IActionResult Index()
         {
             var userId = HttpContext.Session.GetInt32("UserId");
-            if(!userId.HasValue)
+            if (!userId.HasValue)
             {
                 _toastNotification.Warning("Session Expire, Login Again !!!");
                 return View("~/Views/AuthView/Login.cshtml");
@@ -35,6 +37,11 @@ namespace TaskManagmentSystem.Controllers
             return View("~/Views/Dashboard/GenericDashboard.cshtml", tasklist);
         }
 
+        public IActionResult DetailView(int id)
+        {
+            return View("~/Views/Tasks/TaskView.cshtml");
+        }
+
         public async Task<IActionResult> CreateTask()
         {
             var teamViewModel = new TeamViewModel
@@ -45,11 +52,11 @@ namespace TaskManagmentSystem.Controllers
             return View("~/Views/Dashboard/AddTask.cshtml", teamViewModel);
         }
 
-        public async Task<IActionResult> AddTask(Tasks task)
+        public async Task<IActionResult> AddTask(IFormFile file,Tasks task)
         {
             var assingedTo = _userRepository.GetUserByUserId(task.AssignedTo);
 
-            //fetch creator id from session
+            //fetching creator id from session
             var userId = HttpContext.Session.GetInt32("UserId");
             if (!userId.HasValue)
             {
@@ -63,8 +70,29 @@ namespace TaskManagmentSystem.Controllers
             task.AssignedUser = assingedTo.Username;
 
             task.Status = TasksStatus.ToDo;
+
             var result = await _taskRepository.AddTask(task);
-            if(result)
+
+            if (file != null && file.Length > 0)
+            {
+                using (var memoryStream = new MemoryStream())
+                {
+                    await file.CopyToAsync(memoryStream);
+
+                    var document = new Attachments
+                    {
+                        TaskId = result.TaskId,
+                        DocData = memoryStream.ToArray(),
+                        DocType = file.ContentType,
+                        FileName = file.FileName,
+                        UploadedBy = createdBy.UserId,
+                        UploadedUser = createdBy.Username,
+                        UploadDate = DateTime.Now
+                    };
+                    await _taskRepository.AddAttachment(document);
+                }       
+            }
+            if (result != null)
             {
                 _toastNotification.Success("Task Created Successfully !!");
                 return RedirectToAction("Index");

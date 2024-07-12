@@ -18,7 +18,7 @@
                                 <div class="text-center">
                                     <h5 class="mb-0">Create a Task</h5>
                                 </div>
-                                <form class="mt-4 pt-2" asp-controller="Task" asp-action="AddTask">
+                                <form class="mt-4 pt-2" asp-controller="Task" asp-action="AddTask" enctype="multipart/form-data">
                                     <div class="form-floating form-floating-custom mb-4">
                                         <input required type="text" class="form-control" id="input-title" name="Title" placeholder="Enter Title" autocomplete="off">
                                         <label for="input-title">Title</label>
@@ -50,6 +50,11 @@
                                     <div class="form-floating form-floating-custom mb-4">
                                         <input required type="date" id="duedate" class="form-control" name="DueDate" min="@DateTime.Now.ToString("yyyy-MM-dd")">
                                         <label for="duedate">Due Date</label>
+                                    </div>
+
+                                    <div class= "mb-4">
+                                        <label for="file" class="control-label">Select Attachment</label>
+                                        <input type="file" class="form-control" name="file" />
                                     </div>
 
                                     <div class="mb-3">

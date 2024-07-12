@@ -42,3 +42,69 @@ body {
         box-shadow: none !important;
     }
 }
+
+.detail-page {
+    width: 80%;
+    margin: auto;
+    padding: 20px;
+}
+
+.details {
+    margin-bottom: 20px;
+}
+
+.accordion {
+    margin-bottom: 20px;
+}
+
+.accordion-item {
+    margin-bottom: 10px;
+}
+
+.accordion-button {
+    width: 100%;
+    padding: 10px;
+    text-align: left;
+    background-color: #f1f1f1;
+    border: none;
+    cursor: pointer;
+}
+
+    .accordion-button:after {
+        content: '\002B';
+        float: right;
+    }
+
+    .accordion-button.active:after {
+        content: '\2212';
+    }
+
+.accordion-content {
+    display: none;
+    padding: 10px;
+    background-color: #f9f9f9;
+}
+
+.add-note {
+    margin-bottom: 20px;
+}
+
+textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+button {
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+.status-dropdown {
+    margin-bottom: 20px;
+}
+
+select {
+    width: 100%;
+    padding: 10px;
+}

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using Microsoft.EntityFrameworkCore;
+using System.Linq;
 using TaskManagmentSystem.Data;
 using TaskManagmentSystem.Models;
 
@@ -30,6 +31,16 @@ namespace TaskManagmentSystem.Repositories
             }
            
             return tasks;
+        }
+
+        public async Task<List<Teams>> GetListofTeams()
+        {
+            return await _dbContext.Teams.ToListAsync();
+        }
+
+        public async Task<List<TeamMembers>> GetListofTeamsMembers(int teamId)
+        {
+            return await _dbContext.TeamMembers.Where(x=>x.TeamId == teamId).ToListAsync();
         }
     }
 }

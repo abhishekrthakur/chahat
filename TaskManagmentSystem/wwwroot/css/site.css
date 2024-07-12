@@ -20,3 +20,25 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.card-gap {
+    column-gap: 1.5%;
+}
+
+.dashboard-card {
+    border-color:#cbc4c3;
+    width: 215px;
+}
+
+.btn-link {
+    color: #1A1919 !important;
+    padding: 0 !important;
+    svg
+    {
+      fill: #1A1919 !important;
+    }
+
+    &:focus {
+        box-shadow: none !important;
+    }
+}

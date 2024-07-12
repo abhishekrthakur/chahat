@@ -12,6 +12,7 @@ builder.Services.AddDbContext<TaskManagmentDBContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddScoped<UserRepository>();
+builder.Services.AddScoped<TaskRepository>();
 
 builder.Services.AddNotyf(config =>
 {

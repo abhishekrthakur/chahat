@@ -24,7 +24,7 @@ namespace TaskManagmentSystem.Repositories
 
         public User GetUserByUserName(string userName)
         {
-            var user = _dbContext.Users.FirstOrDefault(x => x.Username == userName);
+            var user = _dbContext.Users.FirstOrDefault(x => x.Username.ToLower() == userName.ToLower());
 
             if (user is null)
             {

@@ -9,8 +9,8 @@ namespace TaskManagmentSystem.Models
         public int TaskId { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
-
-        public int? AssignedTo { get; set; }
+        public int AssignedTo { get; set; }
+        public int TeamId { get; set; }
         public string AssignedUser { get; set; }
         public int CreatedBy { get; set; }
         public string CreatedUser { get; set; }

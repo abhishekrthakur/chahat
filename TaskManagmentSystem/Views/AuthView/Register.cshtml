@@ -11,27 +11,27 @@
                             </div>
                             <form class="mt-4 pt-2" asp-controller="Auth" asp-action="RegisterUser">
                                 <div class="form-floating form-floating-custom mb-4">
-                                    <input type="text" class="form-control" id="input-username" name="Username" placeholder="Enter User Name">
+                                    <input required type="text" class="form-control" id="input-username" name="Username" placeholder="Enter User Name" autocomplete="off">
                                     <label for="input-username">Username</label>
                                 </div>
 
                                 <div class="form-floating form-floating-custom mb-4">
-                                    <input type="text" class="form-control" id="input-firstname" name="FirstName" placeholder="Enter First Name">
+                                    <input required type="text" class="form-control" id="input-firstname" name="FirstName" placeholder="Enter First Name" autocomplete="off">
                                     <label for="input-firstname">First Name</label>
                                 </div>
 
                                 <div class="form-floating form-floating-custom mb-4">
-                                    <input type="text" class="form-control" id="input-lastname" name="LastName" placeholder="Enter Last Name">
+                                    <input required type="text" class="form-control" id="input-lastname" name="LastName" placeholder="Enter Last Name" autocomplete="off">
                                     <label for="input-lastnameinput-lastname">Last Name</label>
                                 </div>
 
                                 <div class="form-floating form-floating-custom mb-4 auth-pass-inputgroup">
-                                    <input type="text" class="form-control pe-5" id="input-email" name="Email" placeholder="Enter Email">
+                                    <input required type="text" class="form-control pe-5" id="input-email" name="Email" placeholder="Enter Email" autocomplete="off">
                                     <label for="input-email">Email</label>
                                 </div>
 
                                 <div class="form-floating form-floating-custom mb-4 auth-pass-inputgroup">
-                                    <input type="password" class="form-control pe-5" id="password-input" name="PasswordHash" placeholder="Enter Password">
+                                    <input required type="password" class="form-control pe-5" id="password-input" name="Password" placeholder="Enter Password" autocomplete="off">
                                     <label for="password-input">Password</label>
                                 </div>
 

@@ -1,6 +1,7 @@
 ﻿using AspNetCoreHero.ToastNotification.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 using TaskManagmentSystem.Constants;
+using TaskManagmentSystem.DTO;
 using TaskManagmentSystem.Models;
 using TaskManagmentSystem.Repositories;
 
@@ -37,9 +38,14 @@ namespace TaskManagmentSystem.Controllers
             }
             if(user != null && user.Password.ToLower() == password.ToLower())
             {
-                var task = _taskRepository.GetUsersTask(user.UserId);
+                var tasklist = new TaskListDTO()
+                {
+                    AssignedToMe = _taskRepository.GetUsersTask(user.UserId),
+                    TeamMatesTasks = _taskRepository.GetTeamsTask(user.UserId)
+                };
+                HttpContext.Session.SetInt32("UserId", user.UserId);
                 _toastNotification.Success("Logged In successfully!!");
-                return View("~/Views/Dashboard/GenericDashboard.cshtml", task);
+                return View("~/Views/Dashboard/GenericDashboard.cshtml", tasklist);
             }
             else
             {

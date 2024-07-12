@@ -19,10 +19,18 @@ namespace TaskManagmentSystem.Controllers
 
         public IActionResult Index()
         {
-            //todo - fetch userid from session
-            //add teammember task also
-            var task = _taskRepository.GetUsersTask(3);
-            return View("~/Views/Dashboard/GenericDashboard.cshtml", task);
+            var userId = HttpContext.Session.GetInt32("UserId");
+            if(!userId.HasValue)
+            {
+                _toastNotification.Warning("Session Expire, Login Again !!!");
+                return View("~/Views/AuthView/Login.cshtml");
+            }
+            var tasklist = new TaskListDTO()
+            {
+                AssignedToMe = _taskRepository.GetUsersTask(userId.Value),
+                TeamMatesTasks = _taskRepository.GetTeamsTask(userId.Value)
+            };
+            return View("~/Views/Dashboard/GenericDashboard.cshtml", tasklist);
         }
 
         public async Task<IActionResult> CreateTask()

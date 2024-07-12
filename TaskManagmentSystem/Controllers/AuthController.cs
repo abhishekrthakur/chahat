@@ -36,7 +36,7 @@ namespace TaskManagmentSystem.Controllers
                 _toastNotification.Error("No such User exist !!!");
                 return View("~/Views/AuthView/Login.cshtml");
             }
-            if(user != null && user.Password.ToLower() == password.ToLower())
+            if(user != null && user.Password == password)
             {
                 var tasklist = new TaskListDTO()
                 {

@@ -47,6 +47,11 @@
                                         <label for="teamMembers">Team Member</label>
                                     </div>
 
+                                    <div class="form-floating form-floating-custom mb-4">
+                                        <input required type="date" id="duedate" class="form-control" name="DueDate" min="@DateTime.Now.ToString("yyyy-MM-dd")">
+                                        <label for="duedate">Due Date</label>
+                                    </div>
+
                                     <div class="mb-3">
                                         <button class="btn btn-secondary w-100 waves-effect waves-light" type="submit">Add Task</button>
                                     </div>
@@ -82,4 +87,5 @@
             });
         });
     });
+
 </script>

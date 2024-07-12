@@ -47,8 +47,6 @@ namespace TaskManagmentSystem.Controllers
 
         public async Task<IActionResult> AddTask(Tasks task)
         {
-            //to-do add repo and add duedate in form
-
             var assingedTo = _userRepository.GetUserByUserId(task.AssignedTo);
 
             //fetch creator id from session
@@ -64,7 +62,6 @@ namespace TaskManagmentSystem.Controllers
             task.CreatedBy = createdBy.UserId;
             task.AssignedUser = assingedTo.Username;
 
-            task.DueDate = DateTime.Now.AddDays(7);
             task.Status = TasksStatus.ToDo;
             var result = await _taskRepository.AddTask(task);
             if(result)

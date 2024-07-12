@@ -42,5 +42,20 @@ namespace TaskManagmentSystem.Repositories
         {
             return await _dbContext.TeamMembers.Where(x=>x.TeamId == teamId).ToListAsync();
         }
+
+        public async Task<bool> AddTask(Tasks task)
+        {
+            try
+            {
+                await _dbContext.Tasks.AddAsync(task);
+                await _dbContext.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+        }
     }
 }

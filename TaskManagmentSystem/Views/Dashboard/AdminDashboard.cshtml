@@ -1,5 +1,9 @@
 ﻿@model TaskManagmentSystem.DTO.AdminViewData
 
+<div class="row text-end mt-4">
+    <a href="#" id="logout" class="text-secondary">Logout</a>
+</div>
+
 <div class="row my-5">
     <div class="col-6 d-flex align-items-center">
         <h1>Welcome, Admin</h1>
@@ -8,6 +12,7 @@
         <button id="goToAddTask" class="btn btn-secondary">Create Task +</button>
     </div>
 </div>
+
 <div class="mb-5">
 
     <div class="accordion-item mb-2">
@@ -216,6 +221,10 @@
 
     document.getElementById("goToAddTask").onclick = function () {
         window.location.href = '@Url.Action("CreateTask", "Task")';
+    };
+
+    document.getElementById("logout").onclick = function () {
+        window.location.href = '@Url.Action("LogOut", "Auth")';
     };
 
 </script>

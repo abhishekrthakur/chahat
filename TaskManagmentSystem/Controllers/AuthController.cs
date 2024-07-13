@@ -83,5 +83,12 @@ namespace TaskManagmentSystem.Controllers
                 _toastNotification.Error("An error Occured !! Please Try Again");
             return View("~/Views/AuthView/Register.cshtml");
         }
+
+        public IActionResult LogOut()
+        {
+            HttpContext.Session.Remove("UserId");
+            return View("~/Views/AuthView/Login.cshtml");
+        }
+
     }
 }

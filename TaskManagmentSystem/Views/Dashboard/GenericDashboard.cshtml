@@ -1,9 +1,11 @@
 ﻿@model TaskManagmentSystem.DTO.TaskListDTO
 
-
+<div class="row text-end mt-4">
+    <a href="#" id="logout" class="text-secondary">Logout</a>
+</div>
 <div class="row mt-5">
     <div class="col-6 d-flex align-items-center">
-        <h1 class="mt-4">Welcome</h1>
+        <h1>Welcome, TeamMate</h1>
     </div>
     <div class="col-6 text-end d-flex flex-row-reverse align-items-center">
         <button id="goToAddTask" class="btn btn-secondary">Create Task +</button>
@@ -60,6 +62,10 @@
 <script>
     document.getElementById("goToAddTask").onclick = function () {
         window.location.href = '@Url.Action("CreateTask", "Task")';
+    };
+
+    document.getElementById("logout").onclick = function () {
+        window.location.href = '@Url.Action("LogOut", "Auth")';
     };
 
     function redirectToDetails(id) {

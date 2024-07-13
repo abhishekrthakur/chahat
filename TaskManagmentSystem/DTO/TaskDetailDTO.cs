@@ -6,6 +6,7 @@ namespace TaskManagmentSystem.DTO
 {
     public class TaskDetailDTO : Tasks
     {
+        public string UserRole { get; set; }
         public List<Attachments> Attachments { get; set; }
         public List<Notes> Notes { get; set; }
         public List<TeamMembers> TeamMembers{get;set;}

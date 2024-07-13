@@ -1,10 +1,5 @@
 ﻿using AspNetCoreHero.ToastNotification.Abstractions;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Diagnostics;
-using System.Reflection.Metadata;
-using System.Threading.Tasks;
 using TaskManagmentSystem.Constants;
 using TaskManagmentSystem.DTO;
 using TaskManagmentSystem.Models;
@@ -40,16 +35,44 @@ namespace TaskManagmentSystem.Controllers
             return View("~/Views/Dashboard/GenericDashboard.cshtml", tasklist);
         }
 
+        public async Task<IActionResult> AdminView()
+        {
+            var userId = HttpContext.Session.GetInt32("UserId");
+            if (!userId.HasValue)
+            {
+                _toastNotification.Warning("Session Expire, Login Again !!!");
+                return View("~/Views/AuthView/Login.cshtml");
+            }
+            var admindata = await _taskRepository.GetAdminViewData(userId.Value);
+            return View("~/Views/Dashboard/AdminDashboard.cshtml", admindata);
+        }
+
         public async Task<IActionResult> DetailView(int id)
         {
+            var userId = HttpContext.Session.GetInt32("UserId");
+            if (!userId.HasValue)
+            {
+                _toastNotification.Warning("Session Expire, Login Again !!!");
+                return View("~/Views/AuthView/Login.cshtml");
+            }
+            var user = _userRepository.GetUserByUserId(userId.Value);
             var taskDetails = await _taskRepository.GetTaskDetailViewData(id);
+            taskDetails.UserRole = user.UserRole;
             return View("~/Views/Tasks/TaskView.cshtml", taskDetails);
         }
 
         public async Task<IActionResult> CreateTask()
         {
+            var userId = HttpContext.Session.GetInt32("UserId");
+            if (!userId.HasValue)
+            {
+                _toastNotification.Warning("Session Expire, Login Again !!!");
+                return View("~/Views/AuthView/Login.cshtml");
+            }
+            var user = _userRepository.GetUserByUserId(userId.Value);
             var teamViewModel = new TeamViewModel
             {
+                UserRole = user.UserRole,
                 Teams = await _taskRepository.GetListofTeams(),
                 TeamMembers = new List<TeamMembers>()
             };
@@ -110,14 +133,14 @@ namespace TaskManagmentSystem.Controllers
                 _toastNotification.Warning("Session Expire, Login Again !!!");
                 return View("~/Views/AuthView/Login.cshtml");
             }
-            var createdBy = _userRepository.GetUserByUserId(userId.Value);
+            var user = _userRepository.GetUserByUserId(userId.Value);
 
             var noteDetail = new Notes()
             {
                 NoteText = NoteText,
                 TaskId = TaskId,
-                CreatedUser = createdBy.Username,
-                CreatedBy = createdBy.UserId,
+                CreatedUser = user.Username,
+                CreatedBy = user.UserId,
                 CreatedDate = DateTime.Now,
             };
 
@@ -128,7 +151,7 @@ namespace TaskManagmentSystem.Controllers
                 _toastNotification.Error("Something went wrong !! Try Again");
 
             var taskDetails = await _taskRepository.GetTaskDetailViewData(TaskId);
-            ModelState.Clear();
+            taskDetails.UserRole = user.UserRole;
             return View("~/Views/Tasks/TaskView.cshtml", taskDetails);
         }
 

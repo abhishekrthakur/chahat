@@ -1,0 +1,221 @@
+﻿@model TaskManagmentSystem.DTO.AdminViewData
+
+<div class="row my-5">
+    <div class="col-6 d-flex align-items-center">
+        <h1>Welcome, Admin</h1>
+    </div>
+    <div class="col-6 text-end d-flex flex-row-reverse align-items-center">
+        <button id="goToAddTask" class="btn btn-secondary">Create Task +</button>
+    </div>
+</div>
+<div class="mb-5">
+
+    <div class="accordion-item mb-2">
+        <button class="accordion-button" onclick="toggleAccordion('mytask')">My Tasks(@Model.AssignedToMe.Count)</button>
+        <div id="mytask" class="accordion-content">
+            <div class="row px-2 my-3 card-gap">
+                @foreach (var task in Model.AssignedToMe)
+                {
+                    <div class="card border-1 rounded-1 shadow dashboard-card mb-2" data-id=@task.TaskId onclick="redirectToDetails(@task.TaskId)">
+                        <div class="card-body px-2 py-3">
+                            <div class="d-flex align-items-start border-bottom pb-3">
+                                <div class="flex-grow-1 align-self-center overflow-hidden">
+                                    <p class="mb-0 mt-2 text-black">Task-@task.TaskId</p>
+                                    <p class="mb-0 mt-2 text-black">@task.Title</p>
+                                    <p class="mb-0 mt-2 text-secondary">@task.Status</p>
+                                    <p class="mb-0 mt-2 text-secondary">Due - @task.DueDate.ToString("dd/MMM/yy")</p>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-start">
+                                <div class="flex-grow-1 align-self-center overflow-hidden mt-2">
+                                    <p class="mb-0 mt-2 text-black">@task.AssignedUser</p>
+                                    <p class="mb-0 mt-2 text-secondary">Due - @task.DueDate.ToString("dd/MMM/yy")</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="accordion-item mb-2">
+        <button class="accordion-button" onclick="toggleAccordion('overall')">Over All Report</button>
+        <div id="overall" class="accordion-content">
+            <p>Tasks Report</p>
+            <ul>
+                <li>Total - @Model.TotalTask</li>
+                <li>ToDo - @Model.ToDo</li>
+                <li>InProgress - @Model.Inprogress</li>
+                <li>QA - @Model.QA</li>
+                <li>Blocked - @Model.Blocked</li>
+                <li>Done - @Model.Completed</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="accordion-item mb-2">
+        <button class="accordion-button" onclick="toggleAccordion('alltask')">All Tasks(@Model.AllTasks.Count)</button>
+        <div id="alltask" class="accordion-content">
+            <div class="row px-2 my-3 card-gap">
+                @foreach (var task in Model.AllTasks)
+                {
+                    <div class="card border-1 rounded-1 shadow dashboard-card mb-2" data-id=@task.TaskId onclick="redirectToDetails(@task.TaskId)">
+                        <div class="card-body px-2 py-3">
+                            <div class="d-flex align-items-start border-bottom pb-3">
+                                <div class="flex-grow-1 align-self-center overflow-hidden">
+                                    <p class="mb-0 mt-2 text-black">Task-@task.TaskId</p>
+                                    <p class="mb-0 mt-2 text-black">@task.Title</p>
+                                    <p class="mb-0 mt-2 text-secondary">@task.Status</p>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-start">
+                                <div class="flex-grow-1 align-self-center overflow-hidden mt-2">
+                                    <p class="mb-0 mt-2 text-black">@task.AssignedUser</p>
+                                    <p class="mb-0 mt-2 text-secondary">Due - @task.DueDate.ToString("dd/MMM/yy")</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="accordion-item mb-2">
+        <button class="accordion-button" onclick="toggleAccordion('exceeded')">Exceeded Due Date(@Model.ExceededDueDate.Count)</button>
+        <div id="exceeded" class="accordion-content">
+            <div class="row px-2 my-3 card-gap">
+                @foreach (var task in Model.ExceededDueDate)
+                {
+                    <div class="card border-1 rounded-1 shadow dashboard-card mb-2" data-id=@task.TaskId onclick="redirectToDetails(@task.TaskId)">
+                        <div class="card-body px-2 py-3">
+                            <div class="d-flex align-items-start border-bottom pb-3">
+                                <div class="flex-grow-1 align-self-center overflow-hidden">
+                                    <p class="mb-0 mt-2 text-black">Task-@task.TaskId</p>
+                                    <p class="mb-0 mt-2 text-black">@task.Title</p>
+                                    <p class="mb-0 mt-2 text-secondary">@task.Status</p>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-start">
+                                <div class="flex-grow-1 align-self-center overflow-hidden mt-2">
+                                    <p class="mb-0 mt-2 text-black">@task.AssignedUser</p>
+                                    <p class="mb-0 mt-2 text-secondary">Due - @task.DueDate.ToString("dd/MMM/yy")</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="accordion-item mb-2">
+        <button class="accordion-button" onclick="toggleAccordion('completed')">Completed Tasks(@Model.Done.Count)</button>
+        <div id="completed" class="accordion-content">
+            <div class="row px-2 my-3 card-gap">
+                @foreach (var task in Model.Done)
+                {
+                    <div class="card border-1 rounded-1 shadow dashboard-card mb-2" data-id=@task.TaskId onclick="redirectToDetails(@task.TaskId)">
+                        <div class="card-body px-2 py-3">
+                            <div class="d-flex align-items-start border-bottom pb-3">
+                                <div class="flex-grow-1 align-self-center overflow-hidden">
+                                    <p class="mb-0 mt-2 text-black">Task-@task.TaskId</p>
+                                    <p class="mb-0 mt-2 text-black">@task.Title</p>
+                                    <p class="mb-0 mt-2 text-secondary">@task.Status</p>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-start">
+                                <div class="flex-grow-1 align-self-center overflow-hidden mt-2">
+                                    <p class="mb-0 mt-2 text-black">@task.AssignedUser</p>
+                                    <p class="mb-0 mt-2 text-secondary">Due - @task.DueDate.ToString("dd/MMM/yy")</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="accordion-item mb-2">
+        <button class="accordion-button" onclick="toggleAccordion('earlydue')">Due In 7 Days(@Model.EarlyDue.Count)</button>
+        <div id="earlydue" class="accordion-content">
+            <div class="row px-2 my-3 card-gap">
+                @foreach (var task in Model.EarlyDue)
+                {
+                    <div class="card border-1 rounded-1 shadow dashboard-card mb-2" data-id=@task.TaskId onclick="redirectToDetails(@task.TaskId)">
+                        <div class="card-body px-2 py-3">
+                            <div class="d-flex align-items-start border-bottom pb-3">
+                                <div class="flex-grow-1 align-self-center overflow-hidden">
+                                    <p class="mb-0 mt-2 text-black">Task-@task.TaskId</p>
+                                    <p class="mb-0 mt-2 text-black">@task.Title</p>
+                                    <p class="mb-0 mt-2 text-secondary">@task.Status</p>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-start">
+                                <div class="flex-grow-1 align-self-center overflow-hidden mt-2">
+                                    <p class="mb-0 mt-2 text-black">@task.AssignedUser</p>
+                                    <p class="mb-0 mt-2 text-secondary">Due - @task.DueDate.ToString("dd/MMM/yy")</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="accordion-item mb-2">
+        <button class="accordion-button" onclick="toggleAccordion('latedue')">Due After 7 Days(@Model.LateDue.Count)</button>
+        <div id="latedue" class="accordion-content">
+            <div class="row px-2 my-3 card-gap">
+                @foreach (var task in Model.LateDue)
+                {
+                    <div class="card border-1 rounded-1 shadow dashboard-card mb-2" data-id=@task.TaskId onclick="redirectToDetails(@task.TaskId)">
+                        <div class="card-body px-2 py-3">
+                            <div class="d-flex align-items-start border-bottom pb-3">
+                                <div class="flex-grow-1 align-self-center overflow-hidden">
+                                    <p class="mb-0 mt-2 text-black">Task-@task.TaskId</p>
+                                    <p class="mb-0 mt-2 text-black">@task.Title</p>
+                                    <p class="mb-0 mt-2 text-secondary">@task.Status</p>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-start">
+                                <div class="flex-grow-1 align-self-center overflow-hidden mt-2">
+                                    <p class="mb-0 mt-2 text-black">@task.AssignedUser</p>
+                                    <p class="mb-0 mt-2 text-secondary">Due - @task.DueDate.ToString("dd/MMM/yy")</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    function toggleAccordion(id) {
+        console.log("toggle");
+        var content = document.getElementById(id);
+        var button = content.previousElementSibling;
+        if (content.style.display === "block") {
+            content.style.display = "none";
+            button.classList.remove('active');
+        } else {
+            content.style.display = "block";
+            button.classList.add('active');
+        }
+    }
+
+    function redirectToDetails(id) {
+        window.location.href = '@Url.Action("DetailView", "Task", new { id = "__id__" })'.replace("__id__", id);
+    }
+
+    document.getElementById("goToAddTask").onclick = function () {
+        window.location.href = '@Url.Action("CreateTask", "Task")';
+    };
+
+</script>

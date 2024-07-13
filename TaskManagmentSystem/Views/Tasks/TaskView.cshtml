@@ -99,8 +99,8 @@
         </div>
 
     </div>
-    <div class="accordion">
-        <div class="accordion-item">
+    <div class="mb-5">
+        <div class="accordion-item mb-2">
             <button class="accordion-button" onclick="toggleAccordion('attachments')">Attachments</button>
             <div id="attachments" class="accordion-content">
                 @foreach (var attachments in Model.Attachments)
@@ -145,7 +145,13 @@
 
 <script>
     document.getElementById("goToTask").onclick = function () {
-        window.location.href = '@Url.Action("Index", "Task")';
+        if ('@Model.UserRole' == "CompanyAdmin") 
+        {
+            window.location.href = '@Url.Action("AdminView", "Task")';
+        }
+        else {
+            window.location.href = '@Url.Action("Index", "Task")';
+        }
     };
 
     function toggleAccordion(id) {
@@ -179,8 +185,4 @@
             }
         });
     }
-
-    $('#myModal').on('show.bs.modal', function (e) {
-        $('#modalContent').load('@Url.Action("GetModalContent")');
-    });
 </script>

@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualBasic;
 using System.Linq;
 using System.Reflection.Metadata;
+using TaskManagmentSystem.Constants;
 using TaskManagmentSystem.Data;
 using TaskManagmentSystem.DTO;
 using TaskManagmentSystem.Models;
@@ -31,7 +33,7 @@ namespace TaskManagmentSystem.Repositories
                 var teams = userTeams.Select(x => x.UserId).ToList();
                 tasks = _dbContext.Tasks.Where(x => teams.Contains(x.TeamId) && x.AssignedTo != userId).ToList();
             }
-           
+
             return tasks;
         }
 
@@ -42,7 +44,7 @@ namespace TaskManagmentSystem.Repositories
 
         public async Task<List<TeamMembers>> GetListofTeamsMembers(int teamId)
         {
-            return await _dbContext.TeamMembers.Where(x=>x.TeamId == teamId).ToListAsync();
+            return await _dbContext.TeamMembers.Where(x => x.TeamId == teamId).ToListAsync();
         }
 
         public async Task<Tasks> AddTask(Tasks task)
@@ -79,9 +81,9 @@ namespace TaskManagmentSystem.Repositories
         {
             try
             {
-                var taskDetails = await _dbContext.Tasks.FirstOrDefaultAsync(x=>x.TaskId==id);
+                var taskDetails = await _dbContext.Tasks.FirstOrDefaultAsync(x => x.TaskId == id);
                 if (taskDetails is null)
-                  return null!;
+                    return null!;
                 return taskDetails;
             }
             catch (Exception ex)
@@ -95,7 +97,7 @@ namespace TaskManagmentSystem.Repositories
             try
             {
                 var attachments = await _dbContext.Attachments.Where(x => x.TaskId == id).ToListAsync();
-                if (attachments is null || attachments.Count == 0 )
+                if (attachments is null || attachments.Count == 0)
                     return [];
                 return attachments;
             }
@@ -113,7 +115,7 @@ namespace TaskManagmentSystem.Repositories
                 var notes = await _dbContext.Notes.Where(x => x.TaskId == id).ToListAsync();
                 if (notes is null || notes.Count == 0)
                     return [];
-                return [.. notes.OrderByDescending(x=>x.CreatedDate)];
+                return [.. notes.OrderByDescending(x => x.CreatedDate)];
             }
             catch (Exception ex)
             {
@@ -176,12 +178,12 @@ namespace TaskManagmentSystem.Repositories
             return taskDetails;
         }
 
-        public async Task<bool> UpdateStatus(int id,string status)
+        public async Task<bool> UpdateStatus(int id, string status)
         {
             try
             {
                 var task = await GetTaskDetail(id);
-                if(task != null)
+                if (task != null)
                 {
                     task.Status = status;
                     _dbContext.Update(task);
@@ -218,5 +220,34 @@ namespace TaskManagmentSystem.Repositories
             }
         }
 
+        public async Task<AdminViewData> GetAdminViewData(int userId)
+        {
+            try
+            {
+                var tasks = await _dbContext.Tasks.ToListAsync();
+
+                var adminViewData = new AdminViewData()
+                {
+                    TotalTask = tasks.Count,
+                    ToDo = tasks.Count(x => x.Status == TasksStatus.ToDo),
+                    Inprogress = tasks.Count(x => x.Status == TasksStatus.InProgress),
+                    QA = tasks.Count(x => x.Status == TasksStatus.QA),
+                    Blocked = tasks.Count(x => x.Status == TasksStatus.Blocked),
+                    Completed = tasks.Count(x => x.Status == TasksStatus.Done),
+                    AssignedToMe = tasks.Where(x => x.AssignedTo == userId).ToList(),
+                    AllTasks = tasks,
+                    Done = tasks.Where(x => x.Status == TasksStatus.Done).ToList(),
+                    EarlyDue = tasks.Where(x => x.DueDate >= DateTime.Now && x.DueDate <= DateTime.Now.AddDays(7)).ToList(),
+                    LateDue = tasks.Where(x => x.DueDate >= DateTime.Now.AddDays(7)).ToList(),
+                    ExceededDueDate = tasks.Where(x => x.DueDate <= DateTime.Now).ToList(),
+                };
+                return adminViewData;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return new AdminViewData();
+            }
+        }
     }
 }

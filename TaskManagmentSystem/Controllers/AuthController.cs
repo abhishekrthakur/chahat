@@ -28,7 +28,7 @@ namespace TaskManagmentSystem.Controllers
             return View("~/Views/AuthView/Register.cshtml");
         }
 
-        public IActionResult AuthenticateUser(string userName, string password)
+        public async Task<IActionResult> AuthenticateUser(string userName, string password)
         {
             var user = _userRepository.GetUserByUserName(userName);
             if(user == null)
@@ -38,14 +38,22 @@ namespace TaskManagmentSystem.Controllers
             }
             if(user != null && user.Password == password)
             {
-                var tasklist = new TaskListDTO()
-                {
-                    AssignedToMe = _taskRepository.GetUsersTask(user.UserId),
-                    TeamMatesTasks = _taskRepository.GetTeamsTask(user.UserId)
-                };
                 HttpContext.Session.SetInt32("UserId", user.UserId);
-                _toastNotification.Success("Logged In successfully!!");
-                return View("~/Views/Dashboard/GenericDashboard.cshtml", tasklist);
+                if (user.UserRole != null && user.UserRole != UserRoles.CompanyAdmin)
+                {
+                    var tasklist = new TaskListDTO()
+                    {
+                        AssignedToMe = _taskRepository.GetUsersTask(user.UserId),
+                        TeamMatesTasks = _taskRepository.GetTeamsTask(user.UserId)
+                    };
+                    return View("~/Views/Dashboard/GenericDashboard.cshtml", tasklist);
+                }
+                else if (user.UserRole != null && user.UserRole == UserRoles.CompanyAdmin)
+                {
+                    var admindata = await _taskRepository.GetAdminViewData(user.UserId);
+                    return View("~/Views/Dashboard/AdminDashboard.cshtml", admindata);
+                }
+                _toastNotification.Success("Logged In successfully!!");     
             }
             else
             {

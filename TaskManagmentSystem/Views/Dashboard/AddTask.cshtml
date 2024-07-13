@@ -72,7 +72,12 @@
 
 <script>
     document.getElementById("goToTask").onclick = function () {
-        window.location.href = '@Url.Action("Index", "Task")';
+        if ('@Model.UserRole' == "CompanyAdmin") {
+            window.location.href = '@Url.Action("AdminView", "Task")';
+        }
+        else {
+            window.location.href = '@Url.Action("Index", "Task")';
+        }
     };
     $(document).ready(function () {
         $('#teams').change(function () {

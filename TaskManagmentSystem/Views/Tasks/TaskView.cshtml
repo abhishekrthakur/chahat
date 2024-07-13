@@ -15,7 +15,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form class="mt-4 pt-2" asp-controller="Task" asp-action="UpdateTask" enctype="multipart/form-data">
+            <form class="mt-2 pt-2" asp-controller="Task" asp-action="UpdateTask" enctype="multipart/form-data">
                 <div class="modal-body">
                     <input type="hidden" asp-for="@Model.TaskId" name="TaskId"/>
                     <div class="form-floating form-floating-custom mb-4">
@@ -58,7 +58,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form class="mt-4 pt-2" asp-controller="Task" asp-action="AddAttachments" enctype="multipart/form-data">
+            <form class="mt-2 pt-2" asp-controller="Task" asp-action="AddAttachments" enctype="multipart/form-data">
                 <div class="modal-body">
                     <input type="hidden" asp-for="@Model.TaskId" name="TaskId" />
                     <label for="file" class="control-label">Select Attachment</label>
@@ -93,7 +93,6 @@
                     }
                 </div>
             </div>
-
             <button class="btn btn-secondary" data-toggle="modal" data-target="#editTask">Edit Task</button>
             <button class="btn btn-outline-secondary" data-toggle="modal" data-target="#uploadAttachment">Add Attachments</button>
         </div>

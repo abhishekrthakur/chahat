@@ -16,5 +16,7 @@ namespace TaskManagmentSystem.DTO
         public List<Tasks> EarlyDue { get; set; }
         public List<Tasks> LateDue { get; set; }
         public List<Tasks> ExceededDueDate { get; set; }
+        public List<Teams> Teams { get; set; }
+        public List<User> Members { get; set; }
     }
 }

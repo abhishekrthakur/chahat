@@ -1,4 +1,6 @@
-﻿using TaskManagmentSystem.Data;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using TaskManagmentSystem.Data;
 using TaskManagmentSystem.Models;
 
 namespace TaskManagmentSystem.Repositories
@@ -61,6 +63,12 @@ namespace TaskManagmentSystem.Repositories
                 Console.WriteLine(ex.Message);
                 return false;
             }
+        }
+
+        public async Task<List<User>> GetAllUsers()
+        {
+            var userList = await _dbContext.Users.ToListAsync();
+            return userList;
         }
     }
 }

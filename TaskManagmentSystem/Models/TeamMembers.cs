@@ -1,7 +1,11 @@
-﻿namespace TaskManagmentSystem.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace TaskManagmentSystem.Models
 {
     public class TeamMembers
     {
+        [Key]
+        public int Id { get; set; }
         public int TeamId { get; set; }
         public string TeamName { get; set; }
 

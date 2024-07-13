@@ -35,7 +35,7 @@ namespace TaskManagmentSystem.Data
                 .HasKey(a => a.TaskId);
             
             modelBuilder.Entity<TeamMembers>()
-                .HasNoKey();
+                .HasKey(a => a.Id);
         }
     }
 }

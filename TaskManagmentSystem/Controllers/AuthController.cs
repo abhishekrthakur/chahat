@@ -41,8 +41,11 @@ namespace TaskManagmentSystem.Controllers
                 HttpContext.Session.SetInt32("UserId", user.UserId);
                 if (user.UserRole != null && user.UserRole != UserRoles.CompanyAdmin)
                 {
+                    HttpContext.Session.SetString("Role", "Team");
                     var tasklist = new TaskListDTO()
                     {
+                        Members = await _userRepository.GetAllUsers(),
+                        Teams = await _taskRepository.GetListofTeams(),
                         AssignedToMe = _taskRepository.GetUsersTask(user.UserId),
                         TeamMatesTasks = _taskRepository.GetTeamsTask(user.UserId)
                     };
@@ -50,7 +53,9 @@ namespace TaskManagmentSystem.Controllers
                 }
                 else if (user.UserRole != null && user.UserRole == UserRoles.CompanyAdmin)
                 {
+                    HttpContext.Session.SetString("Role", "CompanyAdmin");
                     var admindata = await _taskRepository.GetAdminViewData(user.UserId);
+                    admindata.Members = await _userRepository.GetAllUsers();
                     return View("~/Views/Dashboard/AdminDashboard.cshtml", admindata);
                 }
                 _toastNotification.Success("Logged In successfully!!");     

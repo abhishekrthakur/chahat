@@ -19,7 +19,7 @@ namespace TaskManagmentSystem.Controllers
             _userRepository = userRepository;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             var userId = HttpContext.Session.GetInt32("UserId");
             if (!userId.HasValue)
@@ -29,6 +29,8 @@ namespace TaskManagmentSystem.Controllers
             }
             var tasklist = new TaskListDTO()
             {
+                Members = await _userRepository.GetAllUsers(),
+                Teams = await _taskRepository.GetListofTeams(),
                 AssignedToMe = _taskRepository.GetUsersTask(userId.Value),
                 TeamMatesTasks = _taskRepository.GetTeamsTask(userId.Value)
             };
@@ -44,6 +46,7 @@ namespace TaskManagmentSystem.Controllers
                 return View("~/Views/AuthView/Login.cshtml");
             }
             var admindata = await _taskRepository.GetAdminViewData(userId.Value);
+            admindata.Members = await _userRepository.GetAllUsers();
             return View("~/Views/Dashboard/AdminDashboard.cshtml", admindata);
         }
 
@@ -155,12 +158,12 @@ namespace TaskManagmentSystem.Controllers
             return View("~/Views/Tasks/TaskView.cshtml", taskDetails);
         }
 
-        public async Task<IActionResult> UpdateStatus(int TaskId,string Status)
+        public async Task<IActionResult> UpdateStatus(int TaskId, string Status)
         {
             var result = await _taskRepository.UpdateStatus(TaskId, Status);
             if (result)
                 return Ok();
-            
+
             return BadRequest();
         }
 
@@ -170,7 +173,7 @@ namespace TaskManagmentSystem.Controllers
             taskDetail.Title = tasks.Title;
             taskDetail.Description = tasks.Description;
             taskDetail.DueDate = tasks.DueDate;
-            if(taskDetail.AssignedTo != tasks.AssignedTo)
+            if (taskDetail.AssignedTo != tasks.AssignedTo)
             {
                 var assingedTo = _userRepository.GetUserByUserId(tasks.AssignedTo);
                 taskDetail.AssignedTo = assingedTo.UserId;
@@ -190,10 +193,82 @@ namespace TaskManagmentSystem.Controllers
             return RedirectToAction("DetailView", new { id = tasks.TaskId });
         }
 
-        public async Task<IActionResult> AddAttachments(IFormFile file, int taskId) 
-        { 
+        public async Task<IActionResult> AddAttachments(IFormFile file, int taskId)
+        {
             await UploadAssignment(file, taskId);
             return RedirectToAction("DetailView", new { id = taskId });
+        }
+
+        public async Task<IActionResult> AddTeam(List<int> SelectedMemberIds, string teamName)
+        {
+            if (SelectedMemberIds != null && SelectedMemberIds.Count > 0)
+            {
+                var team = await _taskRepository.AddTeam(teamName);
+                var result = false;
+                if (team != null)
+                {
+                    result = await _taskRepository.AddTeamMember(team, SelectedMemberIds);
+                    if (result)
+                    {
+                        _toastNotification.Success("Team Added Successfully");
+                    }
+                }
+                if (team == null || !result)
+                {
+                    _toastNotification.Error("An Error Occurred !! Try Again");
+                }
+            }
+            else
+            {
+                _toastNotification.Warning("Please Select a Team Member");
+            }
+            string role = HttpContext.Session.GetString("Role")!;
+
+            if (string.IsNullOrEmpty(role))
+            {
+                _toastNotification.Warning("Session Expire, Login Again !!!");
+                return View("~/Views/AuthView/Login.cshtml");
+            }
+            if (role != "CompanyAdmin")
+                return RedirectToAction("Index");
+            else
+                return RedirectToAction("AdminView");
+        }
+
+        public async Task<IActionResult> AddMember(List<int> SelectedMemberIds, int TeamId)
+        {
+            if (SelectedMemberIds != null && SelectedMemberIds.Count > 0)
+            {
+                var team = await _taskRepository.GetTeam(TeamId);
+                var result = false;
+                if (team != null)
+                {
+                    result = await _taskRepository.AddTeamMember(team, SelectedMemberIds);
+                    if (result)
+                    {
+                        _toastNotification.Success("Members Added Successfully");
+                    }
+                }
+                if (team == null || !result)
+                {
+                    _toastNotification.Error("An Error Occurred !! Try Again");
+                }
+            }
+            else
+            {
+                _toastNotification.Warning("Please Select a Team Member");
+            }
+            string role = HttpContext.Session.GetString("Role")!;
+
+            if (string.IsNullOrEmpty(role))
+            {
+                _toastNotification.Warning("Session Expire, Login Again !!!");
+                return View("~/Views/AuthView/Login.cshtml");
+            }
+            if (role != "CompanyAdmin")
+                return RedirectToAction("Index");
+            else
+                return RedirectToAction("AdminView");
         }
 
         [HttpGet]
@@ -203,7 +278,14 @@ namespace TaskManagmentSystem.Controllers
             return Json(teamMembers);
         }
 
-        public async Task<IActionResult> UploadAssignment(IFormFile file,int taskId)
+        [HttpGet]
+        public async Task<JsonResult> GetNewMember(int teamId)
+        {
+            var teamMembers = await _taskRepository.GetListofNewTeamsMembers(teamId);
+            return Json(teamMembers);
+        }
+
+        public async Task<IActionResult> UploadAssignment(IFormFile file, int taskId)
         {
             //fetching creator id from session
             var userId = HttpContext.Session.GetInt32("UserId");
@@ -230,10 +312,10 @@ namespace TaskManagmentSystem.Controllers
                         UploadedUser = createdBy.Username,
                         UploadDate = DateTime.Now
                     };
-                   result = await _taskRepository.AddAttachment(document);
+                    result = await _taskRepository.AddAttachment(document);
                 }
             }
-            if(!result)
+            if (!result)
             {
                 _toastNotification.Error("Error while Uploading Attachment !!");
                 return BadRequest();

@@ -47,6 +47,14 @@ namespace TaskManagmentSystem.Repositories
             return await _dbContext.TeamMembers.Where(x => x.TeamId == teamId).ToListAsync();
         }
 
+        //get new member to add into teams
+        public async Task<List<User>> GetListofNewTeamsMembers(int teamId)
+        {
+            var existingMember = await _dbContext.TeamMembers.Where(x => x.TeamId == teamId).Select(x => x.UserId).ToListAsync();
+            var users = await _dbContext.Users.Where(x => !existingMember.Contains(x.UserId)).ToListAsync();
+            return users;
+        }
+
         public async Task<Tasks> AddTask(Tasks task)
         {
             try
@@ -228,6 +236,7 @@ namespace TaskManagmentSystem.Repositories
 
                 var adminViewData = new AdminViewData()
                 {
+                    Teams = await GetListofTeams(),
                     TotalTask = tasks.Count,
                     ToDo = tasks.Count(x => x.Status == TasksStatus.ToDo),
                     Inprogress = tasks.Count(x => x.Status == TasksStatus.InProgress),
@@ -238,8 +247,8 @@ namespace TaskManagmentSystem.Repositories
                     AllTasks = tasks,
                     Done = tasks.Where(x => x.Status == TasksStatus.Done).ToList(),
                     EarlyDue = tasks.Where(x => x.DueDate >= DateTime.Now && x.DueDate <= DateTime.Now.AddDays(7)).ToList(),
-                    LateDue = tasks.Where(x => x.DueDate >= DateTime.Now.AddDays(7)).ToList(),
-                    ExceededDueDate = tasks.Where(x => x.DueDate <= DateTime.Now).ToList(),
+                    LateDue = tasks.Where(x => x.DueDate > DateTime.Now.AddDays(7)).ToList(),
+                    ExceededDueDate = tasks.Where(x => x.DueDate < DateTime.Now).ToList(),
                 };
                 return adminViewData;
             }
@@ -247,6 +256,69 @@ namespace TaskManagmentSystem.Repositories
             {
                 Console.WriteLine(ex.Message);
                 return new AdminViewData();
+            }
+        }
+        public async Task<Teams> AddTeam(string TeamName)
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(TeamName))
+                {
+                    Teams team = new()
+                    {
+                        TeamName = TeamName
+                    };
+                    await _dbContext.Teams.AddAsync(team);
+                    await _dbContext.SaveChangesAsync();
+                    return team;
+                }
+
+                return new Teams();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return new Teams();
+            }
+        }
+
+        public async Task<Teams> GetTeam(int id)
+        {
+            try
+            {
+                var team = await _dbContext.Teams.FirstOrDefaultAsync(x => x.TeamId == id);
+                return team!;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return new Teams();
+            }
+        }
+
+        public async Task<bool> AddTeamMember(Teams team, List<int> members)
+        {
+            try
+            {
+                foreach (var member in members)
+                {
+                    var user = await _dbContext.Users.FirstOrDefaultAsync(x => x.UserId == member);
+                    TeamMembers teamMember = new()
+                    {
+                        TeamId = team.TeamId,
+                        TeamName = team.TeamName,
+                        UserName = user!.Username,
+                        UserId = user.UserId,
+                    };
+                    await _dbContext.TeamMembers.AddAsync(teamMember);
+                    await _dbContext.SaveChangesAsync();
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
             }
         }
     }

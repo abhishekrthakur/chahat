@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using System.Reflection.Metadata;
+using System.Threading.Tasks;
 using TaskManagmentSystem.Constants;
 using TaskManagmentSystem.DTO;
 using TaskManagmentSystem.Models;
@@ -150,11 +151,33 @@ namespace TaskManagmentSystem.Controllers
 
         public async Task<IActionResult> UpdateStatus(int TaskId,string Status)
         {
-            var result = await _taskRepository.UpdateTask(TaskId, Status);
+            var result = await _taskRepository.UpdateStatus(TaskId, Status);
             if (result)
                 return Ok();
             
             return BadRequest();
+        }
+
+        public async Task<IActionResult> UpdateTask(Tasks tasks)
+        {
+            var taskDetail = await _taskRepository.GetTaskDetail(tasks.TaskId);
+            taskDetail.Title = tasks.Title;
+            taskDetail.Description = tasks.Description;
+            taskDetail.DueDate = tasks.DueDate;
+            if(taskDetail.AssignedTo != tasks.AssignedTo)
+            {
+                var assingedTo = _userRepository.GetUserByUserId(tasks.AssignedTo);
+                taskDetail.AssignedTo = assingedTo.UserId;
+                taskDetail.AssignedUser = assingedTo.Username;
+            }
+
+            var result = await _taskRepository.UpdateTask(taskDetail);
+            if (result)
+            {
+                _toastNotification.Success("Task Updated SucessFully !!");
+            }
+
+            return RedirectToAction("DetailView", new { id = tasks.TaskId });
         }
         [HttpGet]
         public async Task<JsonResult> GetTeamMembers(int teamId)
@@ -162,6 +185,5 @@ namespace TaskManagmentSystem.Controllers
             var teamMembers = await _taskRepository.GetListofTeamsMembers(teamId);
             return Json(teamMembers);
         }
-
     }
 }

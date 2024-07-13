@@ -5,6 +5,50 @@
         Back
     </button>
 </p>
+
+<div class="modal fade" id="editTask" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Update Task</h5>
+                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form class="mt-4 pt-2" asp-controller="Task" asp-action="UpdateTask" enctype="multipart/form-data">
+                <div class="modal-body">
+                    <input type="hidden" asp-for="@Model.TaskId"/>
+                    <div class="form-floating form-floating-custom mb-4">
+                        <input required type="text" class="form-control" id="input-title" asp-for="@Model.Title" name="Title" placeholder="Enter Title" autocomplete="off">
+                        <label for="input-title">Title</label>
+                    </div>
+
+                    <div class="form-floating form-floating-custom mb-4">
+                        <textarea required type="text" class="form-control" id="input-description" name="Description" asp-for="@Model.Description" placeholder="Enter Description" autocomplete="off"></textarea>
+                        <label for="input-description">Description</label>
+                    </div>
+
+                    <div class="form-floating form-floating-custom mb-4">
+                        <input required type="date" id="duedate" class="form-control" asp-for="@Model.DueDate"  name="DueDate" min="@DateTime.Now.ToString("yyyy-MM-dd")">
+                        <label for="duedate">Due Date</label>
+                    </div>
+
+                    <div class="form-floating form-floating-custom mb-4">
+                        <select required id="teams" class="form-control" name="AssignedTo" asp-for="AssignedTo" asp-items="@(new SelectList(Model.TeamMembers, "UserId", "UserName"))">
+                            <option value="" disabled>Select TeamMate</option>
+                        </select>
+                        <label for="teams">Assign To</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <div class="detail-page">
     <h2>Details Page</h2>
     <div class="details">
@@ -27,7 +71,7 @@
                 </div>
             </div>
 
-            <button class="btn btn-secondary">Edit Task</button>
+            <button class="btn btn-secondary" data-toggle="modal" data-target="#editTask">Edit Task</button>
             <button class="btn btn-outline-secondary">Add Attachments</button>
         </div>
 
@@ -77,6 +121,10 @@
 </div>
 
 <script>
+    document.getElementById("goToTask").onclick = function () {
+        window.location.href = '@Url.Action("Index", "Task")';
+    };
+
     function toggleAccordion(id) {
         console.log("toggle");
         var content = document.getElementById(id);
@@ -108,4 +156,8 @@
             }
         });
     }
+
+    $('#myModal').on('show.bs.modal', function (e) {
+        $('#modalContent').load('@Url.Action("GetModalContent")');
+    });
 </script>

@@ -156,6 +156,7 @@ namespace TaskManagmentSystem.Repositories
         public async Task<TaskDetailDTO> GetTaskDetailViewData(int id)
         {
             var task = await GetTaskDetail(id);
+            var teamMember = await GetListofTeamsMembers(task.TeamId);
             var taskDetails = new TaskDetailDTO()
             {
                 TaskId = task.TaskId,
@@ -169,12 +170,13 @@ namespace TaskManagmentSystem.Repositories
                 DueDate = task.DueDate,
                 Status = task.Status,
                 Attachments = await GetAttachmentsDetail(id),
-                Notes = await GetNotesDetail(id)
+                Notes = await GetNotesDetail(id),
+                TeamMembers = teamMember
             };
             return taskDetails;
         }
 
-        public async Task<bool> UpdateTask(int id,string status)
+        public async Task<bool> UpdateStatus(int id,string status)
         {
             try
             {
@@ -195,5 +197,26 @@ namespace TaskManagmentSystem.Repositories
                 return false;
             }
         }
+
+        public async Task<bool> UpdateTask(Tasks task)
+        {
+            try
+            {
+                if (task != null)
+                {
+                    _dbContext.Update(task);
+                    await _dbContext.SaveChangesAsync();
+                    return true;
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+        }
+
     }
 }

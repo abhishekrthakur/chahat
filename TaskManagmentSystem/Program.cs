@@ -17,6 +17,7 @@ builder.Services.AddScoped<TaskRepository>();
 builder.Services.AddNotyf(config =>
 {
     config.DurationInSeconds = 10;
+    config.HasRippleEffect = true;
     config.IsDismissable = true;
     config.Position = NotyfPosition.BottomRight;
 }

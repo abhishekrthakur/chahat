@@ -1,51 +1,70 @@
-﻿
+﻿@model TaskManagmentSystem.DTO.TaskDetailDTO
 <div class="detail-page">
     <h2>Details Page</h2>
     <div class="details">
-        <h3>Title: Example Title</h3>
-        <p>Description: This is an example description of the item.</p>
+        <h3>Title: @Model.Title</h3>
+        <p>Description:@Model.Description</p>
     </div>
 
     <div class="accordion">
         <div class="accordion-item">
             <button class="accordion-button" onclick="toggleAccordion('attachments')">Attachments</button>
             <div id="attachments" class="accordion-content">
-                <ul>
-                    <li><a href="#">Attachment 1</a></li>
-                    <li><a href="#">Attachment 2</a></li>
-                </ul>
+                @foreach (var attachments in Model.Attachments)
+                {
+                    <div class="row align-items-center">
+                        <p class="col-3 my-2">@attachments.FileName</p>
+                        <p class="col-3 my-2">@attachments.DocType</p>
+                        <p class="col-3 my-2">@attachments.UploadedUser</p>
+                        <a class="col-3 my-2" href="@Url.Action("Download", "Task", new { id = attachments.AttachmentId })">Download</a>
+                    </div>
+                    <hr class="m-0" />
+                }
             </div>
         </div>
 
         <div class="accordion-item">
             <button class="accordion-button" onclick="toggleAccordion('notes')">Notes</button>
             <div id="notes" class="accordion-content">
-                <ul>
-                    <li>Note 1: Example note content.</li>
-                    <li>Note 2: Another example note content.</li>
-                </ul>
+                @foreach (var note in Model.Notes)
+                {
+                    <div class="note">
+                        <p class="note-content">
+                            @note.NoteText
+                        </p>
+                        <p class="note-author">Written by: @note.CreatedUser</p>
+                    </div>
+                    <hr class="m-0" />
+                }
             </div>
         </div>
     </div>
 
-    <div class="add-note">
-        <h3>Add a Note</h3>
-        <textarea id="newNote" rows="4" cols="50"></textarea>
-        <button onclick="addNote()">Add Note</button>
-    </div>
-
     <div class="status-dropdown">
         <h3>Status</h3>
-        <select id="status">
-            <option value="open">Open</option>
-            <option value="inProgress">In Progress</option>
-            <option value="closed">Closed</option>
+        <select asp-for="@Model.Status" asp-items="@Model.StatusList.Select(status  => new SelectListItem  {
+                Value = status,
+                Text = status
+            }).ToList()">
         </select>
     </div>
+
+    <div class="add-note">
+        <form asp-action="AddNotes" asp-controller="Task" method="post">
+            <input type="hidden" asp-for="@Model.TaskId" name="TaskId" />
+            <h3>Add a Note</h3>
+            <textarea id="newNote" rows="4" cols="50" name="NoteText"></textarea>
+            <button class="btn btn-secondary" type="submit">Add Note</button>
+        </form>
+    </div>
+
+
+
 </div>
 
 <script>
     function toggleAccordion(id) {
+        console.log("toggle");
         var content = document.getElementById(id);
         var button = content.previousElementSibling;
         if (content.style.display === "block") {

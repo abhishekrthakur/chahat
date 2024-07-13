@@ -1,5 +1,6 @@
 ﻿using AspNetCoreHero.ToastNotification.Abstractions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using System.Reflection.Metadata;
 using TaskManagmentSystem.Constants;
@@ -37,9 +38,10 @@ namespace TaskManagmentSystem.Controllers
             return View("~/Views/Dashboard/GenericDashboard.cshtml", tasklist);
         }
 
-        public IActionResult DetailView(int id)
+        public async Task<IActionResult> DetailView(int id)
         {
-            return View("~/Views/Tasks/TaskView.cshtml");
+            var taskDetails = await _taskRepository.GetTaskDetailViewData(id);
+            return View("~/Views/Tasks/TaskView.cshtml", taskDetails);
         }
 
         public async Task<IActionResult> CreateTask()
@@ -52,7 +54,7 @@ namespace TaskManagmentSystem.Controllers
             return View("~/Views/Dashboard/AddTask.cshtml", teamViewModel);
         }
 
-        public async Task<IActionResult> AddTask(IFormFile file,Tasks task)
+        public async Task<IActionResult> AddTask(IFormFile file, Tasks task)
         {
             var assingedTo = _userRepository.GetUserByUserId(task.AssignedTo);
 
@@ -90,7 +92,7 @@ namespace TaskManagmentSystem.Controllers
                         UploadDate = DateTime.Now
                     };
                     await _taskRepository.AddAttachment(document);
-                }       
+                }
             }
             if (result != null)
             {
@@ -103,6 +105,47 @@ namespace TaskManagmentSystem.Controllers
                 return View("~/Views/Dashboard/AddTask.cshtml");
             }
 
+        }
+
+        public async Task<IActionResult> Download(int id)
+        {
+            var document = await _taskRepository.GetAttachmentById(id);
+            if (document != null)
+            {
+                return File(document.DocData, document.DocType, document.FileName);
+            }
+            return NotFound();
+        }
+
+        public async Task<IActionResult> AddNotes(int TaskId, string NoteText)
+        {
+
+            var userId = HttpContext.Session.GetInt32("UserId");
+            if (!userId.HasValue)
+            {
+                _toastNotification.Warning("Session Expire, Login Again !!!");
+                return View("~/Views/AuthView/Login.cshtml");
+            }
+            var createdBy = _userRepository.GetUserByUserId(userId.Value);
+
+            var noteDetail = new Notes()
+            {
+                NoteText = NoteText,
+                TaskId = TaskId,
+                CreatedUser = createdBy.Username,
+                CreatedBy = createdBy.UserId,
+                CreatedDate = DateTime.Now,
+            };
+
+            var result = await _taskRepository.AddNotes(noteDetail);
+            if (result)
+                _toastNotification.Success("Note Added Successfully !!");
+            else
+                _toastNotification.Error("Something went wrong !! Try Again");
+
+            var taskDetails = await _taskRepository.GetTaskDetailViewData(TaskId);
+            ModelState.Clear();
+            return View("~/Views/Tasks/TaskView.cshtml", taskDetails);
         }
 
         [HttpGet]

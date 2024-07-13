@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using System.Reflection.Metadata;
 using TaskManagmentSystem.Data;
+using TaskManagmentSystem.DTO;
 using TaskManagmentSystem.Models;
 
 namespace TaskManagmentSystem.Repositories
@@ -71,6 +73,105 @@ namespace TaskManagmentSystem.Repositories
                 Console.WriteLine(ex.Message);
                 return false;
             }
+        }
+
+        public Tasks GetTaskDetail(int id)
+        {
+            try
+            {
+                var taskDetails = _dbContext.Tasks.FirstOrDefault(x=>x.TaskId==id);
+                if (taskDetails is null)
+                  return null!;
+                return taskDetails;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return null!;
+            }
+        }
+        public async Task<List<Attachments>> GetAttachmentsDetail(int id)
+        {
+            try
+            {
+                var attachments = await _dbContext.Attachments.Where(x => x.TaskId == id).ToListAsync();
+                if (attachments is null || attachments.Count == 0 )
+                    return [];
+                return attachments;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return [];
+            }
+        }
+
+        public async Task<List<Notes>> GetNotesDetail(int id)
+        {
+            try
+            {
+                var notes = await _dbContext.Notes.Where(x => x.TaskId == id).ToListAsync();
+                if (notes is null || notes.Count == 0)
+                    return [];
+                return [.. notes.OrderByDescending(x=>x.CreatedDate)];
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return [];
+            }
+        }
+
+        public async Task<Attachments> GetAttachmentById(int id)
+        {
+            try
+            {
+                var attachments = await _dbContext.Attachments.FirstOrDefaultAsync(x => x.AttachmentId == id);
+                if (attachments is null)
+                    return null!;
+                return attachments;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return null!;
+            }
+        }
+
+        public async Task<bool> AddNotes(Notes note)
+        {
+            try
+            {
+                await _dbContext.Notes.AddAsync(note);
+                await _dbContext.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+        }
+
+        public async Task<TaskDetailDTO> GetTaskDetailViewData(int id)
+        {
+            var task = GetTaskDetail(id);
+            var taskDetails = new TaskDetailDTO()
+            {
+                TaskId = task.TaskId,
+                Title = task.Title,
+                Description = task.Description,
+                AssignedTo = task.AssignedTo,
+                TeamId = task.TeamId,
+                AssignedUser = task.AssignedUser,
+                CreatedBy = task.CreatedBy,
+                CreatedUser = task.CreatedUser,
+                DueDate = task.DueDate,
+                Status = task.Status,
+                Attachments = await GetAttachmentsDetail(id),
+                Notes = await GetNotesDetail(id)
+            };
+            return taskDetails;
         }
     }
 }

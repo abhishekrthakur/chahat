@@ -244,7 +244,7 @@ namespace TaskManagmentSystem.Repositories
                     Blocked = tasks.Count(x => x.Status == TasksStatus.Blocked),
                     Completed = tasks.Count(x => x.Status == TasksStatus.Done),
                     AssignedToMe = tasks.Where(x => x.AssignedTo == userId).ToList(),
-                    AllTasks = tasks,
+                    AllTasks = [.. tasks.OrderBy(x=>x.DueDate)],
                     Done = tasks.Where(x => x.Status == TasksStatus.Done).ToList(),
                     EarlyDue = tasks.Where(x => x.DueDate >= DateTime.Now && x.DueDate <= DateTime.Now.AddDays(7)).ToList(),
                     LateDue = tasks.Where(x => x.DueDate > DateTime.Now.AddDays(7)).ToList(),

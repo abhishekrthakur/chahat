@@ -1,4 +1,5 @@
 ﻿using AspNetCoreHero.ToastNotification.Abstractions;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
@@ -75,26 +76,8 @@ namespace TaskManagmentSystem.Controllers
             task.Status = TasksStatus.ToDo;
 
             var result = await _taskRepository.AddTask(task);
-
-            if (file != null && file.Length > 0)
-            {
-                using (var memoryStream = new MemoryStream())
-                {
-                    await file.CopyToAsync(memoryStream);
-
-                    var document = new Attachments
-                    {
-                        TaskId = result.TaskId,
-                        DocData = memoryStream.ToArray(),
-                        DocType = file.ContentType,
-                        FileName = file.FileName,
-                        UploadedBy = createdBy.UserId,
-                        UploadedUser = createdBy.Username,
-                        UploadDate = DateTime.Now
-                    };
-                    await _taskRepository.AddAttachment(document);
-                }
-            }
+            //uploading attachment
+            await UploadAssignment(file, task.TaskId);
             if (result != null)
             {
                 _toastNotification.Success("Task Created Successfully !!");
@@ -176,14 +159,64 @@ namespace TaskManagmentSystem.Controllers
             {
                 _toastNotification.Success("Task Updated SucessFully !!");
             }
+            else
+            {
+                _toastNotification.Success("An Error Occurred while Updating !!");
+            }
 
             return RedirectToAction("DetailView", new { id = tasks.TaskId });
         }
+
+        public async Task<IActionResult> AddAttachments(IFormFile file, int taskId) 
+        { 
+            await UploadAssignment(file, taskId);
+            return RedirectToAction("DetailView", new { id = taskId });
+        }
+
         [HttpGet]
         public async Task<JsonResult> GetTeamMembers(int teamId)
         {
             var teamMembers = await _taskRepository.GetListofTeamsMembers(teamId);
             return Json(teamMembers);
+        }
+
+        public async Task<IActionResult> UploadAssignment(IFormFile file,int taskId)
+        {
+            //fetching creator id from session
+            var userId = HttpContext.Session.GetInt32("UserId");
+            if (!userId.HasValue)
+            {
+                _toastNotification.Warning("Session Expire, Login Again !!!");
+                return View("~/Views/AuthView/Login.cshtml");
+            }
+            var createdBy = _userRepository.GetUserByUserId(userId.Value);
+            var result = false;
+            if (file != null && file.Length > 0)
+            {
+                using (var memoryStream = new MemoryStream())
+                {
+                    await file.CopyToAsync(memoryStream);
+
+                    var document = new Attachments
+                    {
+                        TaskId = taskId,
+                        DocData = memoryStream.ToArray(),
+                        DocType = file.ContentType,
+                        FileName = file.FileName,
+                        UploadedBy = createdBy.UserId,
+                        UploadedUser = createdBy.Username,
+                        UploadDate = DateTime.Now
+                    };
+                   result = await _taskRepository.AddAttachment(document);
+                }
+            }
+            if(!result)
+            {
+                _toastNotification.Error("Error while Uploading Attachment !!");
+                return BadRequest();
+            }
+            _toastNotification.Success("Attachment Uploaded Successfully !!");
+            return Ok();
         }
     }
 }

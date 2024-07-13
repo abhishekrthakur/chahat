@@ -6,18 +6,18 @@
     </button>
 </p>
 
-<div class="modal fade" id="editTask" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="editTask" tabindex="-1" role="dialog" aria-labelledby="editTask" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Update Task</h5>
+                <h5 class="modal-title" id="editTask">Update Task</h5>
                 <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <form class="mt-4 pt-2" asp-controller="Task" asp-action="UpdateTask" enctype="multipart/form-data">
                 <div class="modal-body">
-                    <input type="hidden" asp-for="@Model.TaskId"/>
+                    <input type="hidden" asp-for="@Model.TaskId" name="TaskId"/>
                     <div class="form-floating form-floating-custom mb-4">
                         <input required type="text" class="form-control" id="input-title" asp-for="@Model.Title" name="Title" placeholder="Enter Title" autocomplete="off">
                         <label for="input-title">Title</label>
@@ -41,14 +41,37 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Save changes</button>
+                    <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-secondary">Save changes</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
 
+<div class="modal fade" id="uploadAttachment" tabindex="-1" role="dialog" aria-labelledby="uploadAttachment" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="uploadAttachment">Add Attachments</h5>
+                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form class="mt-4 pt-2" asp-controller="Task" asp-action="AddAttachments" enctype="multipart/form-data">
+                <div class="modal-body">
+                    <input type="hidden" asp-for="@Model.TaskId" name="TaskId" />
+                    <label for="file" class="control-label">Select Attachment</label>
+                    <input type="file" class="form-control" name="file" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-secondary">Upload</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 <div class="detail-page">
     <h2>Details Page</h2>
     <div class="details">
@@ -72,7 +95,7 @@
             </div>
 
             <button class="btn btn-secondary" data-toggle="modal" data-target="#editTask">Edit Task</button>
-            <button class="btn btn-outline-secondary">Add Attachments</button>
+            <button class="btn btn-outline-secondary" data-toggle="modal" data-target="#uploadAttachment">Add Attachments</button>
         </div>
 
     </div>
@@ -84,9 +107,9 @@
                 {
                     <div class="row align-items-center">
                         <p class="col-3 my-2">@attachments.FileName</p>
-                        <p class="col-3 my-2">@attachments.DocType</p>
-                        <p class="col-3 my-2">@attachments.UploadedUser</p>
-                        <a class="col-3 my-2" href="@Url.Action("Download", "Task", new { id = attachments.AttachmentId })">Download</a>
+                        <p class="col-5 my-2">@attachments.DocType</p>
+                        <p class="col-2 my-2">@attachments.UploadedUser</p>
+                        <a class="col-2 my-2" href="@Url.Action("Download", "Task", new { id = attachments.AttachmentId })">Download</a>
                     </div>
                     <hr class="m-0" />
                 }

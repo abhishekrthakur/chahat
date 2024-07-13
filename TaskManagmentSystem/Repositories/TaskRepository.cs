@@ -75,11 +75,11 @@ namespace TaskManagmentSystem.Repositories
             }
         }
 
-        public Tasks GetTaskDetail(int id)
+        public async Task<Tasks> GetTaskDetail(int id)
         {
             try
             {
-                var taskDetails = _dbContext.Tasks.FirstOrDefault(x=>x.TaskId==id);
+                var taskDetails = await _dbContext.Tasks.FirstOrDefaultAsync(x=>x.TaskId==id);
                 if (taskDetails is null)
                   return null!;
                 return taskDetails;
@@ -155,7 +155,7 @@ namespace TaskManagmentSystem.Repositories
 
         public async Task<TaskDetailDTO> GetTaskDetailViewData(int id)
         {
-            var task = GetTaskDetail(id);
+            var task = await GetTaskDetail(id);
             var taskDetails = new TaskDetailDTO()
             {
                 TaskId = task.TaskId,
@@ -172,6 +172,28 @@ namespace TaskManagmentSystem.Repositories
                 Notes = await GetNotesDetail(id)
             };
             return taskDetails;
+        }
+
+        public async Task<bool> UpdateTask(int id,string status)
+        {
+            try
+            {
+                var task = await GetTaskDetail(id);
+                if(task != null)
+                {
+                    task.Status = status;
+                    _dbContext.Update(task);
+                    await _dbContext.SaveChangesAsync();
+                    return true;
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
         }
     }
 }

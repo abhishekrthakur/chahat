@@ -148,6 +148,14 @@ namespace TaskManagmentSystem.Controllers
             return View("~/Views/Tasks/TaskView.cshtml", taskDetails);
         }
 
+        public async Task<IActionResult> UpdateStatus(int TaskId,string Status)
+        {
+            var result = await _taskRepository.UpdateTask(TaskId, Status);
+            if (result)
+                return Ok();
+            
+            return BadRequest();
+        }
         [HttpGet]
         public async Task<JsonResult> GetTeamMembers(int teamId)
         {

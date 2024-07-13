@@ -1,4 +1,10 @@
 ﻿@model TaskManagmentSystem.DTO.TaskDetailDTO
+<p class="my-3">
+    <button id="goToTask" class="btn btn-link d-flex align-items-center">
+        <svg id="Layer_1" style="enable-background:new 0 0 512 512;" version="1.1" viewBox="0 0 512 512" width="18px" heigth="18px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><polygon points="352,128.4 319.7,96 160,256 160,256 160,256 319.7,416 352,383.6 224.7,256 " /></svg>
+        Back
+    </button>
+</p>
 <div class="detail-page">
     <h2>Details Page</h2>
     <div class="details">
@@ -6,6 +12,26 @@
         <p>Description:@Model.Description</p>
     </div>
 
+    <div class="row align-items-center mb-3">
+        <div class="text-end">
+            <div class="dropdown">
+                <button class="btn btn-secondary dropbtn">@Model.Status</button>
+                <div class="dropdown-content">
+                    @foreach (var status in Model.StatusList)
+                    {
+                        if (status != Model.Status)
+                        {
+                            <p class="m-0" onclick="selectStatus('@status')">@status</p>
+                        }
+                    }
+                </div>
+            </div>
+
+            <button class="btn btn-secondary">Edit Task</button>
+            <button class="btn btn-outline-secondary">Add Attachments</button>
+        </div>
+
+    </div>
     <div class="accordion">
         <div class="accordion-item">
             <button class="accordion-button" onclick="toggleAccordion('attachments')">Attachments</button>
@@ -40,15 +66,6 @@
         </div>
     </div>
 
-    <div class="status-dropdown">
-        <h3>Status</h3>
-        <select asp-for="@Model.Status" asp-items="@Model.StatusList.Select(status  => new SelectListItem  {
-                Value = status,
-                Text = status
-            }).ToList()">
-        </select>
-    </div>
-
     <div class="add-note">
         <form asp-action="AddNotes" asp-controller="Task" method="post">
             <input type="hidden" asp-for="@Model.TaskId" name="TaskId" />
@@ -57,9 +74,6 @@
             <button class="btn btn-secondary" type="submit">Add Note</button>
         </form>
     </div>
-
-
-
 </div>
 
 <script>
@@ -74,5 +88,24 @@
             content.style.display = "block";
             button.classList.add('active');
         }
+    }
+
+    function selectStatus(status) {
+        var taskId = '@Model.TaskId';
+
+        $.ajax({
+            url: '@Url.Action("UpdateStatus", "Task")',
+            type: 'POST',
+            data: {
+                TaskId: taskId,
+                Status: status
+            },
+            success: function (response) {
+                location.reload();
+            },
+            error: function (xhr, status) {
+                alert('Error updating status');
+            }
+        });
     }
 </script>

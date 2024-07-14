@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace TaskManagmentSystem.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -18,7 +18,9 @@ namespace TaskManagmentSystem.Migrations
                     AttachmentId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     TaskId = table.Column<int>(type: "int", nullable: false),
-                    FilePath = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DocData = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
+                    DocType = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FileName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UploadedBy = table.Column<int>(type: "int", nullable: false),
                     UploadedUser = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UploadDate = table.Column<DateTime>(type: "datetime2", nullable: false)
@@ -53,7 +55,8 @@ namespace TaskManagmentSystem.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    AssignedTo = table.Column<int>(type: "int", nullable: true),
+                    AssignedTo = table.Column<int>(type: "int", nullable: false),
+                    TeamId = table.Column<int>(type: "int", nullable: false),
                     AssignedUser = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedBy = table.Column<int>(type: "int", nullable: false),
                     CreatedUser = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -69,6 +72,8 @@ namespace TaskManagmentSystem.Migrations
                 name: "TeamMembers",
                 columns: table => new
                 {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     TeamId = table.Column<int>(type: "int", nullable: false),
                     TeamName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UserId = table.Column<int>(type: "int", nullable: false),
@@ -76,6 +81,7 @@ namespace TaskManagmentSystem.Migrations
                 },
                 constraints: table =>
                 {
+                    table.PrimaryKey("PK_TeamMembers", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -98,7 +104,7 @@ namespace TaskManagmentSystem.Migrations
                     UserId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Username = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),

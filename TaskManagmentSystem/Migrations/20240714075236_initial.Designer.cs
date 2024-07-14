@@ -12,8 +12,8 @@ using TaskManagmentSystem.Data;
 namespace TaskManagmentSystem.Migrations
 {
     [DbContext(typeof(TaskManagmentDBContext))]
-    [Migration("20240713212803_add-key")]
-    partial class addkey
+    [Migration("20240714075236_initial")]
+    partial class initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

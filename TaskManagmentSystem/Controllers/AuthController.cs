@@ -76,6 +76,12 @@ namespace TaskManagmentSystem.Controllers
                 return View("~/Views/AuthView/Register.cshtml");
             }
 
+            if (user != null && user.Password.Length < 5)
+            {
+                _toastNotification.Error("Use a longer Password!!");
+                return View("~/Views/AuthView/Register.cshtml");
+            }
+
             user.UserRole = UserRoles.TeamMember;
             var result = await _userRepository.UpdateUser(user);
 

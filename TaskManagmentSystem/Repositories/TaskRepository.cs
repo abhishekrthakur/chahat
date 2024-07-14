@@ -1,7 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.VisualBasic;
-using System.Linq;
-using System.Reflection.Metadata;
 using TaskManagmentSystem.Constants;
 using TaskManagmentSystem.Data;
 using TaskManagmentSystem.DTO;
@@ -30,7 +27,7 @@ namespace TaskManagmentSystem.Repositories
             var userTeams = _dbContext.TeamMembers.Where(x => x.UserId == userId).ToList();
             if (userTeams.Count != 0)
             {
-                var teams = userTeams.Select(x => x.UserId).ToList();
+                var teams = userTeams.Select(x => x.TeamId).ToList();
                 tasks = _dbContext.Tasks.Where(x => teams.Contains(x.TeamId) && x.AssignedTo != userId).ToList();
             }
 

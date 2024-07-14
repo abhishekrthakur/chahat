@@ -84,5 +84,16 @@ and you can add notes also
 ![image](https://github.com/user-attachments/assets/772260f0-f4b9-4c57-916f-aa69778eeeb9)
 ![image](https://github.com/user-attachments/assets/7970d380-59ab-4746-88ff-d6a02ea88689)
 
+-------- noe coming back to CompanyAdmin -- if you set up you role as CompanyAdmin via Update Users set UserRole = 'CompanyAdmin' where UserId = 2 -----------
+and then you log in with that credentials then you will see AdminDashboard instead GenericDashBoard Which will look like this
+![image](https://github.com/user-attachments/assets/f8da3f7a-11e4-4cb0-93d3-596cff77704f)
 
+it have to same facilities as generic ![image](https://github.com/user-attachments/assets/1e308cc5-6b54-4f13-ac6a-a5e847ebccc1)
 
+but you can see lot more , like my task ,  All task , completed tasks , Exceeded due date , early due date , late due date , overall report in according form
+
+![image](https://github.com/user-attachments/assets/62168846-fa8d-4ea2-b8eb-9573e7a62375)
+![image](https://github.com/user-attachments/assets/1870a336-a584-4c5f-a226-c9ab3f1a6de0)
+![image](https://github.com/user-attachments/assets/273f6513-3d3a-498f-9b8e-1dcc252d2336)
+![image](https://github.com/user-attachments/assets/ff1401ff-4f26-46e2-bd29-9d12628f8579)
+![image](https://github.com/user-attachments/assets/479123f1-f77f-4ee3-94c2-0f612c3b2f3e)

@@ -97,3 +97,13 @@ but you can see lot more , like my task ,  All task , completed tasks , Exceeded
 ![image](https://github.com/user-attachments/assets/273f6513-3d3a-498f-9b8e-1dcc252d2336)
 ![image](https://github.com/user-attachments/assets/ff1401ff-4f26-46e2-bd29-9d12628f8579)
 ![image](https://github.com/user-attachments/assets/479123f1-f77f-4ee3-94c2-0f612c3b2f3e)
+
+You can also create task add team , add member , add notes and attachments , view card , change status , edit card as usual
+
+-- Also HAve a little logout button on the top 
+![image](https://github.com/user-attachments/assets/f24524be-f7da-468c-8a04-56d8e1aa5ecd)
+
+
+And that's about it , Enjoy :)
+
+------- Note :- I have Created this in 2 days (incuding documentation :)) so it may have many unnoticed bugs and problems ---- if you find one please feel free to report on ranavivek367@gmail.com 

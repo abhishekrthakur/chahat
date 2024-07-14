@@ -103,7 +103,8 @@ namespace TaskManagmentSystem.Controllers
 
             var result = await _taskRepository.AddTask(task);
             //uploading attachment
-            await UploadAssignment(file, task.TaskId);
+            if(file != null)
+              await UploadAssignment(file, task.TaskId);
             if (result != null)
             {
                 _toastNotification.Success("Task Created Successfully !!");

@@ -30,7 +30,7 @@ jobs:
          ARM_TENANT_ID : ${{ secrets.AZURE_TENANT_ID }}
       defaults:
          run:
-            working_directory : ./TaskManagmentSystem/Infra/Terraform
+            working-directory : ./TaskManagmentSystem/Infra/Terraform
       steps:
          - uses: actions/checkout@v4
   

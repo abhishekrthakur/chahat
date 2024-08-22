@@ -25,10 +25,3 @@ resource "azurerm_windows_web_app" "TaskManagment" {
     always_on = false
   }
 }
-
-data "azurerm_web_app_auth_settings_v2" "auth" {
-  name                = azurerm_windows_web_app.TaskManagment.name
-  resource_group_name = azurerm_windows_web_app.TaskManagment.resource_group_name
-
-  depends_on = [azurerm_windows_web_app.TaskManagment]
-}

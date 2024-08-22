@@ -5,16 +5,17 @@ on:
  - pull_request
  - push
 
-build:
-  runs-on : ubuntu-latest
-  steps: 
-    - uses: actions/checkout@v4
-    - name: Setup Dot Net
-      uses : actions/setup-dotnet@v4
-      with:
-        dotnet-version: 8.x
+jobs:
+    build:
+      runs-on : ubuntu-latest
+      steps: 
+        - uses: actions/checkout@v4
+        - name: Setup Dot Net
+          uses : actions/setup-dotnet@v4
+          with:
+            dotnet-version: 8.x
 
-    - name : Install Dependencies
-      run :  dotnet restore ./TaskManagmentSystem/TaskManagmentSystem.csproj
-    - name : Install Dependencies
-      run :  dotnet build ./TaskManagmentSystem/TaskManagmentSystem.csproj
+        - name : Install Dependencies
+          run :  dotnet restore ./TaskManagmentSystem/TaskManagmentSystem.csproj
+        - name : Install Dependencies
+          run :  dotnet build ./TaskManagmentSystem/TaskManagmentSystem.csproj

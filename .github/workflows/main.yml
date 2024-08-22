@@ -1,0 +1,7 @@
+name : Task Managment System
+
+on: 
+ - workflow_dispatch
+ - pull_request
+ - push
+

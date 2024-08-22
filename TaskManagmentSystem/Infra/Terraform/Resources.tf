@@ -7,6 +7,15 @@ resource "azurerm_resource_group" "FirstRG" {
   }
 }
 
+resource "azurerm_resource_group" "SecondRG" {
+  name = "TaskManagmentWebApp2"
+  location = "southindia"
+  tags = {
+    env = "dev"
+    source = "terraform"
+  }
+}
+
 resource "azurerm_service_plan" "taskmanagmentplan" {
   name                = "taskmanagmentplan"
   resource_group_name = azurerm_resource_group.FirstRG.name

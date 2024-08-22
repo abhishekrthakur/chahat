@@ -19,3 +19,30 @@ jobs:
           run :  dotnet restore ./TaskManagmentSystem/TaskManagmentSystem.csproj
         - name : Install Dependencies
           run :  dotnet build ./TaskManagmentSystem/TaskManagmentSystem.csproj
+
+    terraform :
+      runs-on : ubuntu-latest
+
+      env: 
+         ARM_CLIENT_ID : ${{ secrets.AZURE_CLIENT_ID }}
+         ARM_CLIENT_SECRET : ${{ secrets.AZURE_CLIENT_SECRET }}
+         ARM_SUBSCRIPTION_ID : ${{ secrets.AZURE_SUB_ID }}
+         ARM_TENANT_ID : ${{ secrets.AZURE_TENANT_ID }}
+      deafults:
+         run:
+            working_directory : ./TaskManagmentSystem/Infra/Terraform
+      steps:
+         - uses: actions/checkout@v4
+  
+         - name : SetUp Terraform
+           uses: hashicorp/setup-terraform@v3
+
+         - name : Terraform Init
+           run : terraform init
+
+         - name : Terraform Plan
+           run : terraform plan
+         
+         - name : Terraform Apply
+           run : terrafomr apply -auto-approve
+

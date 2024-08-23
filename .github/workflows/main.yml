@@ -52,6 +52,7 @@ jobs:
        #needs : terraform
 
        steps:
+          - uses: actions/checkout@v4
           - name : Publish App
-            run : dotnet publish ./TaskManagmentSystem/TaskManagmentSystem.csproj --tl:on --configuration Release --output ./TaskManagmentSystem/Infra
+            run : dotnet publish ./TaskManagmentSystem/TaskManagmentSystem.csproj --tl:on --configuration Release --output ./Publish
 

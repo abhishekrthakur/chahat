@@ -56,3 +56,9 @@ jobs:
           - name : Publish App
             run : dotnet publish ./TaskManagmentSystem/TaskManagmentSystem.csproj --tl:on --configuration Release --output ./Publish
 
+          - name: Deploy
+            uses: azure/webapps-deploy@v2
+            with:
+              app-name: taskmanagment-vk
+              publish-profile: ${{ secrets.Azure_PublishWeb_Secret }}
+              package: ./Publish

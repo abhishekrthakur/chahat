@@ -22,6 +22,7 @@ jobs:
 
     terraform :
       runs-on : ubuntu-latest
+      needs : buid
 
       env: 
          ARM_CLIENT_ID : ${{ secrets.AZURE_CLIENT_ID }}

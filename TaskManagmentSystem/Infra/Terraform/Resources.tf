@@ -7,15 +7,6 @@ resource "azurerm_resource_group" "FirstRG" {
   }
 }
 
-resource "azurerm_resource_group" "SecondRG" {
-  name = "TaskManagmentWebApp2"
-  location = "southindia"
-  tags = {
-    env = "dev"
-    source = "terraform"
-  }
-}
-
 resource "azurerm_service_plan" "taskmanagmentplan" {
   name                = "taskmanagmentplan"
   resource_group_name = azurerm_resource_group.FirstRG.name
@@ -25,12 +16,18 @@ resource "azurerm_service_plan" "taskmanagmentplan" {
 }
 
 resource "azurerm_windows_web_app" "TaskManagment" {
-  name                = "TaskManagmenttest77"
+  name                = "TaskManagment-vk"
   resource_group_name = azurerm_resource_group.FirstRG.name
   location            = azurerm_service_plan.taskmanagmentplan.location
   service_plan_id     = azurerm_service_plan.taskmanagmentplan.id
 
   site_config {
+    application_stack {
+      dotnet_core_version = "8.0"
+    }
+    cors {
+      allowed_origins = ["*"]
+    }
     always_on = false
   }
 }

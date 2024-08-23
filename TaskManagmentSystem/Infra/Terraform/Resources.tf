@@ -23,7 +23,7 @@ resource "azurerm_windows_web_app" "TaskManagment" {
 
   site_config {
     application_stack {
-      dotnet_version = "8.0"
+      dotnet_version = "v8.0"
     }
     cors {
       allowed_origins = ["*"]

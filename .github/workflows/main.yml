@@ -17,7 +17,7 @@ jobs:
 
         - name : Install Dependencies
           run :  dotnet restore ./TaskManagmentSystem/TaskManagmentSystem.csproj
-        - name : Install Dependencies
+        - name : Build
           run :  dotnet build ./TaskManagmentSystem/TaskManagmentSystem.csproj --configuration Release --no-restore
 
     #terraform :
@@ -53,5 +53,5 @@ jobs:
 
        steps:
           - name : Publish App
-            run :  dotnet publish ./TaskManagmentSystem/TaskManagmentSystem.csproj --configuration Release --output ./Publish
+            run : dotnet publish ./TaskManagmentSystem/TaskManagmentSystem.csproj -tl:on --configuration Release --output ./Publish
 

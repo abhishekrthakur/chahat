@@ -33,7 +33,7 @@ resource "azurerm_windows_web_app" "TaskManagment" {
 }
 
 resource "azurerm_mssql_server" "tm_db_server" {
-  name                         = "TaskManagmentDbServervk"
+  name                         = "taskmanagmentdbservervk"
   resource_group_name          = azurerm_resource_group.FirstRG.name
   location                     = "Cental India"
   version                      = "12.0"
@@ -48,14 +48,14 @@ resource "azurerm_mssql_server" "tm_db_server" {
 }
 
 resource "azurerm_mssql_firewall_rule" "tm_db_server_rule" {
-  name             = "FirewallRule"
+  name             = "firewallrule"
   server_id        = azurerm_mssql_server.tm_db_server.id
   start_ip_address = "0.0.0.0"
   end_ip_address   = "0.0.0.0"
 }
 
 resource "azurerm_mssql_database" "tm_db" {
-  name           = "TaskManagmentDb"
+  name           = "taskmanagmentdb"
   server_id      = azurerm_mssql_server.tm_db_server.id
   max_size_gb    = 4
   read_scale     = false

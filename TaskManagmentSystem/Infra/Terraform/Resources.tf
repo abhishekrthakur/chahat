@@ -62,7 +62,7 @@ resource "azurerm_mssql_database" "tm_db" {
   sku_name       = "GP_S_Gen5_2"
   zone_redundant = false
   min_capacity = 1
-  auto_pause_delay_in_minutes = 4
+  auto_pause_delay_in_minutes = 60
   tags = {
     env = "dev"
     source = "terraform"

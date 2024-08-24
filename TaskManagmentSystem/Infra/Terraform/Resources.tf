@@ -78,8 +78,8 @@ resource "azurerm_app_configuration" "appconf" {
   location            = azurerm_resource_group.FirstRG.location
 }
 
-resource "azurerm_app_configuration_key" "dbconnectionstring" {
-  configuration_store_id = azurerm_app_configuration.appconf.id
-  key                    = "dbconnectionstring"
-  value                  = ""
-}
+# resource "azurerm_app_configuration_key" "dbconnectionstring" {
+#   configuration_store_id = azurerm_app_configuration.appconf.id
+#   key                    = "dbconnectionstring"
+#   value                  = ""
+# }

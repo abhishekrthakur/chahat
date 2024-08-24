@@ -73,7 +73,7 @@ resource "azurerm_mssql_database" "tm_db" {
 }
 
 resource "azurerm_app_configuration" "appconf" {
-  name                = "appConfigurationvkapp"
+  name                = "appConfigurationvkwebapp"
   resource_group_name = azurerm_resource_group.FirstRG.name
   location            = azurerm_resource_group.FirstRG.location
 }

@@ -35,7 +35,7 @@ resource "azurerm_windows_web_app" "TaskManagment" {
 resource "azurerm_mssql_server" "tm_db_server" {
   name                         = "taskmanagmentdbservervk"
   resource_group_name          = azurerm_resource_group.FirstRG.name
-  location                     = "Cental India"
+  location                     = "centralindia"
   version                      = "12.0"
   administrator_login          = "adminlogin"
   administrator_login_password = "Admin@1234567"

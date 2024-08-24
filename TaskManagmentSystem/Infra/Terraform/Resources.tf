@@ -71,3 +71,15 @@ resource "azurerm_mssql_database" "tm_db" {
     prevent_destroy = true
   }
 }
+
+resource "azurerm_app_configuration" "appconf" {
+  name                = "appConfiguration"
+  resource_group_name = azurerm_resource_group.FirstRG.name
+  location            = azurerm_resource_group.FirstRG.location
+}
+
+resource "azurerm_app_configuration_key" "dbconnectionstring" {
+  configuration_store_id = azurerm_app_configuration.appconf.id
+  key                    = "dbconnectionstring"
+  value                  = ""
+}

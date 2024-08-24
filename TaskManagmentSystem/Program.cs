@@ -1,8 +1,6 @@
 using AspNetCoreHero.ToastNotification;
-using AspNetCoreHero.ToastNotification.Notyf.Models;
 using Azure.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.AzureAppConfiguration;
 using TaskManagmentSystem.Data;
 using TaskManagmentSystem.Repositories;

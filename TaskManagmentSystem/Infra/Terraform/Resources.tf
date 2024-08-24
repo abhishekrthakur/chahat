@@ -33,7 +33,7 @@ resource "azurerm_windows_web_app" "TaskManagment" {
 }
 
 resource "azurerm_mssql_server" "tm_db_server" {
-  name                         = "TaskManagmentDbServer-vk"
+  name                         = "TaskManagmentDbServervk"
   resource_group_name          = azurerm_resource_group.FirstRG.name
   location                     = "Cental India"
   version                      = "12.0"
@@ -41,7 +41,7 @@ resource "azurerm_mssql_server" "tm_db_server" {
   administrator_login_password = "Admin@1234567"
   minimum_tls_version          = "1.2"
 
-   tags = {
+  tags = {
     env = "dev"
     source = "terraform"
   }
@@ -62,13 +62,11 @@ resource "azurerm_mssql_database" "tm_db" {
   sku_name       = "GP_S_Gen5_2"
   zone_redundant = false
   min_capacity = 1
-  
-
+  auto_pause_delay_in_minutes = 4
   tags = {
-    foo = "bar"
+    env = "dev"
+    source = "terraform"
   }
-
-  # prevent the possibility of accidental data loss
   lifecycle {
     prevent_destroy = true
   }

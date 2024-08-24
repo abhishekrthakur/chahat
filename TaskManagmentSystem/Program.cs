@@ -1,5 +1,9 @@
 using AspNetCoreHero.ToastNotification;
+using AspNetCoreHero.ToastNotification.Notyf.Models;
+using Azure.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.AzureAppConfiguration;
 using TaskManagmentSystem.Data;
 using TaskManagmentSystem.Repositories;
 
@@ -8,8 +12,21 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+var connectionString = builder.Configuration["AppConfig:ConnectionString"];
+
+builder.Configuration.AddAzureAppConfiguration(options =>
+{
+    options.Connect(connectionString)
+           .ConfigureKeyVault(kv =>
+           {
+               kv.SetCredential(new DefaultAzureCredential());
+           })
+           .Select(KeyFilter.Any, LabelFilter.Null);
+});
+
+var connStrDb = builder.Configuration["DbConnectionString"];
 builder.Services.AddDbContext<TaskManagmentDBContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(connStrDb));
 
 builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped<TaskRepository>();

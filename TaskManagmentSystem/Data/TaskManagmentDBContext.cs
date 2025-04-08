@@ -13,6 +13,7 @@ namespace TaskManagmentSystem.Data
         public DbSet<Tasks> Tasks { get; set; }
         public DbSet<Attachments> Attachments { get; set; }
         public DbSet<Notes> Notes { get; set; }
+        public DbSet<Attendance> Attendances { get; set; }
         public TaskManagmentDBContext(DbContextOptions<TaskManagmentDBContext> options)
            : base(options)
         {
@@ -35,6 +36,9 @@ namespace TaskManagmentSystem.Data
                 .HasKey(a => a.TaskId);
             
             modelBuilder.Entity<TeamMembers>()
+                .HasKey(a => a.Id);
+
+            modelBuilder.Entity<Attendance>()
                 .HasKey(a => a.Id);
         }
     }

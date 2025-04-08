@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TaskManagmentSystem.Data;
 
@@ -11,9 +12,11 @@ using TaskManagmentSystem.Data;
 namespace TaskManagmentSystem.Migrations
 {
     [DbContext(typeof(TaskManagmentDBContext))]
-    partial class TaskManagmentDBContextModelSnapshot : ModelSnapshot
+    [Migration("20250407165608_Attendance-updated")]
+    partial class Attendanceupdated
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -71,9 +74,8 @@ namespace TaskManagmentSystem.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Day")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Day")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("InTime")
                         .HasColumnType("datetime2");

@@ -10,24 +10,13 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-var connectionString = builder.Configuration["AppConfig:ConnectionString"];
-
-builder.Configuration.AddAzureAppConfiguration(options =>
-{
-    options.Connect(connectionString)
-           .ConfigureKeyVault(kv =>
-           {
-               kv.SetCredential(new DefaultAzureCredential());
-           })
-           .Select(KeyFilter.Any, LabelFilter.Null);
-});
-
-var connStrDb = builder.Configuration["DbConnectionString"];
+var connStrDb = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<TaskManagmentDBContext>(options =>
     options.UseSqlServer(connStrDb));
 
 builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped<TaskRepository>();
+builder.Services.AddScoped<EmployeeRepository>();
 
 builder.Services.AddNotyf(config =>
 {

@@ -1,137 +1,189 @@
 ﻿@model TaskManagmentSystem.DTO.TaskListDTO
+<style>
+    html, body {
+        margin: 0 !important;
+        padding: 0 !important;
+    }
 
-<div class="row text-end mt-4">
-    <a href="#" id="logout" class="text-secondary">Logout</a>
-</div>
+    .no-left-margin {
+        margin-left: 0 !important;
+        padding-left: 0 !important;
+    }
 
-<div class="modal fade" id="addTeam" tabindex="-1" role="dialog" aria-labelledby="addTeam" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addTeam">Add Team</h5>
-                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <form class="mt-2 p-4" asp-controller="Task" asp-action="AddTeam" enctype="multipart/form-data">
-                <div class="form-floating form-floating-custom mb-4">
-                    <input required type="text" class="form-control" id="input-title" name="teamName" placeholder="Enter Team Name" autocomplete="off">
-                    <label for="input-title">Team Name</label>
-                </div>
-                <div class="mb-3">
-                    <label>Select Team Member</label>
-                    <div>
-                        @foreach (var item in Model.Members)
-                        {
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" name="SelectedMemberIds" value="@item.UserId" id="option_@item.UserId"/>
-                                <label class="form-check-label" for="option_@item.UserId">
-                                    @item.Username
-                                </label>
-                            </div>
-                        }
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" id="teamsubmit" class="btn btn-secondary">Save</button>
-                </div>
-            </form>
-        </div>
+    .sidebar {
+        min-height: 100vh;
+        background-color: #f8f9fa;
+    }
+</style>
+
+
+<div class="row no-left-margin g-0">
+    <!-- Sidebar -->
+    <div class="col-md-2 sidebar d-flex flex-column p-3 shadow-sm">
+        <h5 class="mb-4">Menu</h5>
+        <ul class="nav flex-column">
+            <li class="nav-item mb-2">
+                <a class="nav-link text-dark" asp-controller="Auth" asp-action="Dashboard">Dashboard</a>
+            </li>
+            <li class="nav-item mb-2">
+                <a class="nav-link text-dark" href="#" id="loadAttendance">My Attendance</a>
+            </li>
+        </ul>
     </div>
-</div>
 
-<div class="modal fade" id="addMember" tabindex="-1" role="dialog" aria-labelledby="addMember" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addMember">Add Member</h5>
-                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+    <div class="col-md-10 p-4" id="mainContent" style="display: none;">
+    </div>
+
+    <!-- Main Content -->
+    <div class="col-md-10" id="dashboardContent">
+        <div class="row text-end mt-4">
+            <a href="#" id="logout" class="text-secondary">Logout</a>
+        </div>
+
+        <div class="row mt-5">
+            <div class="col-6 d-flex align-items-center">
+                <h1>Welcome, TeamMate</h1>
             </div>
-            <form class="mt-2 pt-2" asp-controller="Task" asp-action="AddMember" enctype="multipart/form-data">
-                <div class="modal-body">
-                    <div class="form-floating form-floating-custom mb-4">
-                        <select required id="teams" class="form-control" name="TeamId" asp-items="@(new SelectList(Model.Teams, "TeamId", "TeamName"))">
-                            <option value="">Select Team</option>
-                        </select>
-                        <label for="teams">Team</label>
+            <div class="col-6 text-end d-flex flex-row-reverse align-items-center">
+                <button id="goToAddTask" class="btn btn-outline-secondary mx-1">Create Task +</button>
+                <button id="goToAddMember" class="btn btn-secondary mx-1" data-toggle="modal" data-target="#addMember">Add Member</button>
+                <button id="goToAddTeam" class="btn btn-secondary mx-1" data-toggle="modal" data-target="#addTeam">Add Team</button>
+            </div>
+        </div>
+
+        <div class="modal fade" id="addTeam" tabindex="-1" role="dialog" aria-labelledby="addTeam" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addTeam">Add Team</h5>
+                        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
                     </div>
-                    <div class="mb-3">
-                        <div id="teamMembersContainer">
-                            <!-- Team members checkboxes will be added here -->
+                    <form class="mt-2 p-4" asp-controller="Task" asp-action="AddTeam" enctype="multipart/form-data">
+                        <div class="form-floating form-floating-custom mb-4">
+                            <input required type="text" class="form-control" id="input-title" name="teamName" placeholder="Enter Team Name" autocomplete="off">
+                            <label for="input-title">Team Name</label>
+                        </div>
+                        <div class="mb-3">
+                            <label>Select Team Member</label>
+                            <div>
+                                @foreach (var item in Model.Members)
+                                {
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="SelectedMemberIds" value="@item.UserId" id="option_@item.UserId" />
+                                        <label class="form-check-label" for="option_@item.UserId">
+                                            @item.Username
+                                        </label>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" id="teamsubmit" class="btn btn-secondary">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="addMember" tabindex="-1" role="dialog" aria-labelledby="addMember" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addMember">Add Member</h5>
+                        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form class="mt-2 pt-2" asp-controller="Task" asp-action="AddMember" enctype="multipart/form-data">
+                        <div class="modal-body">
+                            <div class="form-floating form-floating-custom mb-4">
+                                <select required id="teams" class="form-control" name="TeamId" asp-items="@(new SelectList(Model.Teams, "TeamId", "TeamName"))">
+                                    <option value="">Select Team</option>
+                                </select>
+                                <label for="teams">Team</label>
+                            </div>
+                            <div class="mb-3">
+                                <div id="teamMembersContainer">
+                                    <!-- Team members checkboxes will be added here -->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-secondary">Save changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="mt-4 text-muted">My Task (@Model.AssignedToMe.Count)</h2>
+        <div class="row px-2 my-3 card-gap">
+            @foreach (var task in Model.AssignedToMe)
+            {
+                <div class="card border-1 rounded-1 shadow dashboard-card mb-2" data-id=@task.TaskId onclick="redirectToDetails(@task.TaskId)">
+                    <div class="card-body px-2 py-3">
+                        <div class="d-flex align-items-start border-bottom pb-3">
+                            <div class="flex-grow-1 align-self-center overflow-hidden">
+                                <p class="mb-0 mt-2 text-black">Task-@task.TaskId</p>
+                                <p class="mb-0 mt-2 text-black">@task.Title</p>
+                                <p class="mb-0 mt-2 text-secondary">@task.Status</p>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-start">
+                            <div class="flex-grow-1 align-self-center overflow-hidden mt-2">
+                                <p class="mb-0 mt-2 text-black">@task.AssignedUser</p>
+                                <p class="mb-0 mt-2 text-secondary">Due - @task.DueDate.ToString("dd/MMM/yy")</p>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-secondary">Save changes</button>
-                </div>
-            </form>
+            }
         </div>
-    </div>
-</div>
 
-<div class="row mt-5">
-    <div class="col-6 d-flex align-items-center">
-        <h1>Welcome, TeamMate</h1>
-    </div>
-    <div class="col-6 text-end d-flex flex-row-reverse align-items-center">
-        <button id="goToAddTask" class="btn btn-outline-secondary mx-1">Create Task +</button>
-        <button id="goToAddMember" class="btn btn-secondary mx-1" data-toggle="modal" data-target="#addMember">Add Member</button>
-        <button id="goToAddTeam" class="btn btn-secondary mx-1" data-toggle="modal" data-target="#addTeam">Add Team</button>
-    </div>
-</div>
-<h2 class="mt-4 text-muted">My Task (@Model.AssignedToMe.Count)</h2>
-<div class="row px-2 my-3 card-gap">
-    @foreach (var task in Model.AssignedToMe)
-    {
-        <div class="card border-1 rounded-1 shadow dashboard-card mb-2" data-id=@task.TaskId onclick="redirectToDetails(@task.TaskId)">
-            <div class="card-body px-2 py-3">
-                <div class="d-flex align-items-start border-bottom pb-3">
-                    <div class="flex-grow-1 align-self-center overflow-hidden">
-                        <p class="mb-0 mt-2 text-black">Task-@task.TaskId</p>
-                        <p class="mb-0 mt-2 text-black">@task.Title</p>
-                        <p class="mb-0 mt-2 text-secondary">@task.Status</p>
+        <h2 class="mt-4 text-muted">Team Members Task (@Model.TeamMatesTasks.Count)</h2>
+        <div class="row px-2 my-3 card-gap">
+            @foreach (var task in Model.TeamMatesTasks)
+            {
+                <div class="card border-1 rounded-1 shadow dashboard-card mb-2" data-id=@task.TaskId onclick="redirectToDetails(@task.TaskId)">
+                    <div class="card-body px-2 py-3">
+                        <div class="d-flex align-items-start border-bottom pb-3">
+                            <div class="flex-grow-1 align-self-center overflow-hidden">
+                                <p class="mb-0 mt-2 text-black">Task-@task.TaskId</p>
+                                <p class="mb-0 mt-2 text-black">@task.Title</p>
+                                <p class="mb-0 mt-2 text-secondary">@task.Status</p>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-start">
+                            <div class="flex-grow-1 align-self-center overflow-hidden mt-2">
+                                <p class="mb-0 mt-2 text-black">@task.AssignedUser</p>
+                                <p class="mb-0 mt-2 text-secondary">Due - @task.DueDate.ToString("dd/MMM/yy")</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="d-flex align-items-start">
-                    <div class="flex-grow-1 align-self-center overflow-hidden mt-2">
-                        <p class="mb-0 mt-2 text-black">@task.AssignedUser</p>
-                        <p class="mb-0 mt-2 text-secondary">Due - @task.DueDate.ToString("dd/MMM/yy")</p>
-                    </div>
-                </div>
-            </div>
+            }
         </div>
-    }
-</div>
-
-<h2 class="mt-4 text-muted">Team Members Task (@Model.TeamMatesTasks.Count)</h2>
-<div class="row px-2 my-3 card-gap">
-    @foreach (var task in Model.TeamMatesTasks)
-    {
-        <div class="card border-1 rounded-1 shadow dashboard-card mb-2" data-id=@task.TaskId onclick="redirectToDetails(@task.TaskId)">
-            <div class="card-body px-2 py-3">
-                <div class="d-flex align-items-start border-bottom pb-3">
-                    <div class="flex-grow-1 align-self-center overflow-hidden">
-                        <p class="mb-0 mt-2 text-black">Task-@task.TaskId</p>
-                        <p class="mb-0 mt-2 text-black">@task.Title</p>
-                        <p class="mb-0 mt-2 text-secondary">@task.Status</p>
-                    </div>
-                </div>
-                <div class="d-flex align-items-start">
-                    <div class="flex-grow-1 align-self-center overflow-hidden mt-2">
-                        <p class="mb-0 mt-2 text-black">@task.AssignedUser</p>
-                        <p class="mb-0 mt-2 text-secondary">Due - @task.DueDate.ToString("dd/MMM/yy")</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    }
+    </div>
 </div>
 
 <script>
+
+     $(document).ready(function () {
+            $('#loadAttendance').click(function (e) {
+                e.preventDefault();
+                $('#mainContent').html('<p>Loading...</p>');
+
+                $.get('@Url.Action("GetAttendancePartial", "Employee")', function (data) {
+                     $('#mainContent').html(data).show(); // ensure it stays visible after load
+                     $('#dashboardContent').hide();
+                });
+            });
+        });
+
     document.getElementById("goToAddTask").onclick = function () {
         window.location.href = '@Url.Action("CreateTask", "Task")';
     };

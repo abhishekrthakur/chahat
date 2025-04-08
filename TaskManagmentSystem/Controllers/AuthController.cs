@@ -11,12 +11,14 @@ namespace TaskManagmentSystem.Controllers
     {
         private readonly UserRepository _userRepository;
         private readonly TaskRepository _taskRepository;
+        private readonly EmployeeRepository _employeeRepository;
         private readonly INotyfService _toastNotification;
-        public AuthController(UserRepository userRepository, TaskRepository taskRepository, INotyfService toastNotification)
+        public AuthController(UserRepository userRepository, TaskRepository taskRepository, INotyfService toastNotification, EmployeeRepository employeeRepository)
         {
             _userRepository = userRepository;
             _taskRepository = taskRepository;
             _toastNotification = toastNotification;
+            _employeeRepository = employeeRepository;
         }
         public IActionResult Login()
         {
@@ -47,7 +49,8 @@ namespace TaskManagmentSystem.Controllers
                         Members = await _userRepository.GetAllUsers(),
                         Teams = await _taskRepository.GetListofTeams(),
                         AssignedToMe = _taskRepository.GetUsersTask(user.UserId),
-                        TeamMatesTasks = _taskRepository.GetTeamsTask(user.UserId)
+                        TeamMatesTasks = _taskRepository.GetTeamsTask(user.UserId),
+                        Attendances = await _employeeRepository.GetAttendanceListByUserId(user.UserId)
                     };
                     return View("~/Views/Dashboard/GenericDashboard.cshtml", tasklist);
                 }
@@ -93,6 +96,20 @@ namespace TaskManagmentSystem.Controllers
             else
                 _toastNotification.Error("An error Occured !! Please Try Again");
             return View("~/Views/AuthView/Register.cshtml");
+        }
+
+        public async Task<IActionResult> Dashboard()
+        {
+            var userId = HttpContext.Session.GetInt32("UserId");
+            var tasklist = new TaskListDTO()
+            {
+                Members = await _userRepository.GetAllUsers(),
+                Teams = await _taskRepository.GetListofTeams(),
+                AssignedToMe = _taskRepository.GetUsersTask((int)userId),
+                TeamMatesTasks = _taskRepository.GetTeamsTask((int)userId),
+                Attendances = await _employeeRepository.GetAttendanceListByUserId((int)userId)
+            };
+            return View("~/Views/Dashboard/GenericDashboard.cshtml", tasklist);
         }
 
         public IActionResult LogOut()

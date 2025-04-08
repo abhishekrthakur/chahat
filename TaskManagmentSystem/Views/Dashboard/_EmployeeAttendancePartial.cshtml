@@ -1,0 +1,181 @@
+﻿@model TaskManagmentSystem.DTO.TaskListDTO
+@inject IHttpContextAccessor HttpContextAccessor
+
+@{
+    var today = DateTime.Now.Date;
+    var hasCheckedInToday = Model.Attendances != null && Model.Attendances.Any(a => a.Date.Date == today);
+    var hasCheckedOutToday = Model.Attendances != null && Model.Attendances.Any(a => a.Date.Date == today && a.OutTIme.TimeOfDay != TimeSpan.Zero);
+}
+
+<h2>Attendance History</h2>
+
+<!-- Buttons (Time will update via JS) -->
+<div class="mb-3 d-flex gap-2">
+    <button type="button" class="btn btn-danger" id="checkInBtn">
+        Check-in <span id="checkInTime">&nbsp;</span>
+    </button>
+    <button type="button" class="btn btn-success" id="checkOutBtn">
+        Check-out <span id="checkOutTime">&nbsp;</span>
+    </button>
+</div>
+
+<table class="table table-bordered table-striped">
+    <thead class="thead-dark">
+        <tr>
+            <th>Date</th>
+            <th>Day</th>
+            <th>In Time</th>
+            <th>Out Time</th>
+            <th>Total Time</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Attendances != null && Model.Attendances.Any())
+        {
+            foreach (var attendance in Model.Attendances)
+            {
+                <tr>
+                    <td>@attendance.Date.ToString("yyyy-MM-dd")</td>
+                    <td>@attendance.Day</td>
+                    <td>@attendance.InTime.ToString("HH:mm")</td>
+                    <td>@(attendance.OutTIme.TimeOfDay == TimeSpan.Zero ? "00:00" : attendance.OutTIme.ToString("HH:mm"))</td>
+                    <td>@attendance.TotalTime</td>
+                    <td>@attendance.Status</td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="6" class="text-center">No attendance records found.</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<script>
+        function updateTime() {
+        const now = new Date();
+        const hours = now.getHours();
+        const minutes = now.getMinutes();
+        const formattedHours = ((hours + 11) % 12 + 1);
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        const formattedTime = formattedHours + ':' + (minutes < 10 ? '0' + minutes : minutes) + ' ' + ampm;
+
+        const checkInBtn = document.getElementById('checkInBtn');
+        const checkOutBtn = document.getElementById('checkOutBtn');
+        const checkInSpan = document.getElementById('checkInTime');
+        const checkOutSpan = document.getElementById('checkOutTime');
+
+        // Only update time if buttons are enabled
+        if (checkInBtn && !checkInBtn.disabled && checkInSpan) {
+            checkInSpan.textContent = formattedTime;
+        }
+        if (checkOutBtn && !checkOutBtn.disabled && checkOutSpan) {
+            checkOutSpan.textContent = formattedTime;
+        }
+    }
+
+    function startMinuteSync() {
+        updateTime(); // first update immediately
+
+        const now = new Date();
+        const msToNextMinute = (60 - now.getSeconds()) * 1000 - now.getMilliseconds();
+
+        setTimeout(() => {
+            updateTime(); // align to the next minute exactly
+            setInterval(updateTime, 60000); // then every 60 seconds
+        }, msToNextMinute);
+    }
+
+    startMinuteSync();
+
+     function formatTime(dateString) {
+        var date = new Date(dateString);
+        var hours = date.getHours();
+        var minutes = date.getMinutes();
+        return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+    }
+
+    var hasCheckedInToday = @(hasCheckedInToday.ToString().ToLower());
+    var hasCheckedOutToday = @(hasCheckedOutToday.ToString().ToLower());
+    $(document).ready(function () {
+        if (hasCheckedInToday) {
+        $('#checkInBtn').prop('disabled', true);
+    }
+
+     if (hasCheckedOutToday) {
+        $('#checkOutBtn').prop('disabled', true);
+    }
+        // Check-in
+        $('#checkInBtn').click(function () {
+            var userId = '@HttpContextAccessor.HttpContext.Session.GetInt32("UserId")';
+
+            $.ajax({
+                url: '@Url.Action("CheckIn", "Employee")',
+                type: 'POST',
+                data: { userId: userId },
+                success: function (data) {
+                     $('#checkInBtn').prop('disabled', true);
+                    var tbody = $('table tbody');
+                    tbody.empty(); // Clear the current table rows
+
+                    if (data.length > 0) {
+                        data.forEach(function (attendance) {
+                            var row = `<tr>
+                                <td>${attendance.date.split('T')[0]}</td>
+                                <td>${attendance.day}</td>
+                                <td>${formatTime(attendance.inTime)}</td>
+                                <td>${attendance.outTIme ? formatTime(attendance.outTIme) : '-'}</td>
+                                <td>${attendance.totalTime || '-'}</td>
+                                <td>${attendance.status}</td>
+                            </tr>`;
+                            tbody.append(row);
+                        });
+                    } else {
+                        tbody.append('<tr><td colspan="6" class="text-center">No attendance records found.</td></tr>');
+                    }
+                },
+                error: function () {
+                    alert("Check-in failed.");
+                }
+            });
+        });
+
+        // Check-out
+        $('#checkOutBtn').click(function () {
+            var userId = '@HttpContextAccessor.HttpContext.Session.GetInt32("UserId")';
+
+            $.ajax({
+                url: '@Url.Action("CheckOut", "Employee")',
+                type: 'POST',
+                data: { userId: userId },
+                success: function (data) {
+                   $('#checkOutBtn').prop('disabled', true);
+                    var tbody = $('table tbody');
+                    tbody.empty(); // Clear the current table rows
+
+                    if (data.length > 0) {
+                        data.forEach(function (attendance) {
+                            var row = `<tr>
+                                <td>${attendance.date.split('T')[0]}</td>
+                                <td>${attendance.day}</td>
+                                <td>${formatTime(attendance.inTime)}</td>
+                                <td>${attendance.outTIme ? formatTime(attendance.outTIme) : '-'}</td>
+                                <td>${attendance.totalTime || '-'}</td>
+                                <td>${attendance.status}</td>
+                            </tr>`;
+                            tbody.append(row);
+                        });
+                    } else {
+                        tbody.append('<tr><td colspan="6" class="text-center">No attendance records found.</td></tr>');
+                    }
+                },
+                error: function () {
+                    alert("Check-out failed.");
+                }
+            });
+        });
+    });
+</script>

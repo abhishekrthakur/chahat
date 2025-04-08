@@ -76,5 +76,10 @@ namespace TaskManagmentSystem.Repositories
             _dbContext.Attendances.Update(attendance);
             return await _dbContext.SaveChangesAsync() > 0;
         }
+
+        public async Task<List<Timesheet>> GetUserTimesheetList(int userId)
+        {
+            return await _dbContext.Timesheets.Where(x => x.UserId == userId).ToListAsync();
+        }
     }
 }

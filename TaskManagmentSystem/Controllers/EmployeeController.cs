@@ -10,12 +10,14 @@ namespace TaskManagmentSystem.Controllers
     public class EmployeeController : Controller
     {
         private readonly EmployeeRepository _employeeRepository;
+        private readonly UserRepository _userRepository;
         private readonly INotyfService _toastNotification;
 
-        public EmployeeController(EmployeeRepository employeeRepository, INotyfService toastNotification)
+        public EmployeeController(EmployeeRepository employeeRepository, INotyfService toastNotification, UserRepository userRepository)
         {
             _employeeRepository = employeeRepository;
             _toastNotification = toastNotification;
+            _userRepository = userRepository;
         }
 
         public async Task<IActionResult> GetAttendancePartial()
@@ -27,6 +29,16 @@ namespace TaskManagmentSystem.Controllers
             };
             return PartialView("~/Views/Dashboard/_EmployeeAttendancePartial.cshtml", tasklist);
         }
+        public async Task<IActionResult> GetTimesheetPartial()
+        {
+            var userId = HttpContext.Session.GetInt32("UserId");
+            var tasklist = new TaskListDTO()
+            {
+                Members = await _userRepository.GetAllAdmins()
+            };
+            return PartialView("~/Views/Dashboard/_EmployeeTimesheetPartial.cshtml", tasklist);
+        }
+
         public async Task<JsonResult> CheckIn(int userId)
         {
             var attendace = new Attendance();

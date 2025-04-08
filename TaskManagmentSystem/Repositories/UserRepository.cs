@@ -35,6 +35,11 @@ namespace TaskManagmentSystem.Repositories
             return user;
         }
 
+        public async Task<List<User>> GetAllAdmins()
+        {
+            return await _dbContext.Users.Where(x => x.UserRole.ToLower() == "companyadmin").ToListAsync();
+        }
+
         public async Task<bool> AddUser(User user)
         {
             try

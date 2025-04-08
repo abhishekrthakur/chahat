@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace TaskManagmentSystem.Migrations
 {
     /// <inheritdoc />
-    public partial class Attendanceadded : Migration
+    public partial class Attendancetableadded : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -20,8 +20,9 @@ namespace TaskManagmentSystem.Migrations
                     UserId = table.Column<int>(type: "int", nullable: false),
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     InTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    OutTIme = table.Column<DateTime>(type: "datetime2", nullable: false),
                     TotalTime = table.Column<TimeSpan>(type: "time", nullable: false),
-                    Day = table.Column<int>(type: "int", nullable: false),
+                    Day = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>

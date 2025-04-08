@@ -18,6 +18,7 @@ namespace TaskManagmentSystem.Data
         public DbSet<Attachments> Attachments { get; set; }
         public DbSet<Notes> Notes { get; set; }
         public DbSet<Attendance> Attendances { get; set; }
+        public DbSet<Timesheet> Timesheets { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Attachments>()
@@ -39,6 +40,9 @@ namespace TaskManagmentSystem.Data
                 .HasKey(a => a.Id);
 
             modelBuilder.Entity<Attendance>()
+                .HasKey(a => a.Id);
+
+            modelBuilder.Entity<Timesheet>()
                 .HasKey(a => a.Id);
         }
     }

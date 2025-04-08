@@ -12,8 +12,8 @@ using TaskManagmentSystem.Data;
 namespace TaskManagmentSystem.Migrations
 {
     [DbContext(typeof(TaskManagmentDBContext))]
-    [Migration("20250407170737_Attendance-feild-updated")]
-    partial class Attendancefeildupdated
+    [Migration("20250408045754_Attendance-table-added")]
+    partial class Attendancetableadded
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

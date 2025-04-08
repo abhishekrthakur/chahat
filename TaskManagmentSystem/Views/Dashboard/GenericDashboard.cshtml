@@ -28,10 +28,16 @@
             <li class="nav-item mb-2">
                 <a class="nav-link text-dark" href="#" id="loadAttendance">My Attendance</a>
             </li>
+            <li class="nav-item mb-2">
+                <a class="nav-link text-dark" href="#" id="loadTimesheet">My Timesheet</a>
+            </li>
         </ul>
     </div>
 
     <div class="col-md-10 p-4" id="mainContent" style="display: none;">
+    </div>
+
+    <div class="col-md-10 p-4" id="timesheetContent" style="display: none;">
     </div>
 
     <!-- Main Content -->
@@ -180,6 +186,17 @@
                 $.get('@Url.Action("GetAttendancePartial", "Employee")', function (data) {
                      $('#mainContent').html(data).show(); // ensure it stays visible after load
                      $('#dashboardContent').hide();
+                });
+            });
+
+            $('#loadTimesheet').click(function (e) {
+                e.preventDefault();
+                $('#timesheetContent').html('<p>Loading...</p>');
+
+                $.get('@Url.Action("GetTimesheetPartial", "Employee")', function (data) {
+                     $('#timesheetContent').html(data).show(); // ensure it stays visible after load
+                     $('#dashboardContent').hide();
+                     $('#mainContent').hide();
                 });
             });
         });

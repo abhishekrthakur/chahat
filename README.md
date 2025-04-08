@@ -105,5 +105,3 @@ You can also create task add team , add member , add notes and attachments , vie
 
 
 And that's about it , Enjoy :)
-
-------- Note :- I have Created this in 2 days (incuding documentation :)) so it may have many unnoticed bugs and problems ---- if you find one please feel free to report on ranavivek367@gmail.com 

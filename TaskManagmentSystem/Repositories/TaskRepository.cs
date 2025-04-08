@@ -245,7 +245,7 @@ namespace TaskManagmentSystem.Repositories
                     Done = tasks.Where(x => x.Status == TasksStatus.Done).ToList(),
                     EarlyDue = tasks.Where(x => x.DueDate >= DateTime.Now && x.DueDate <= DateTime.Now.AddDays(7)).ToList(),
                     LateDue = tasks.Where(x => x.DueDate > DateTime.Now.AddDays(7)).ToList(),
-                    ExceededDueDate = tasks.Where(x => x.DueDate < DateTime.Now).ToList(),
+                    ExceededDueDate = tasks.Where(x => x.DueDate < DateTime.Now && x.Status != TasksStatus.Done).ToList(),
                 };
                 return adminViewData;
             }

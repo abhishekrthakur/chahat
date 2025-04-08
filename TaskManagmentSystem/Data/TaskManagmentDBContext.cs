@@ -7,6 +7,10 @@ namespace TaskManagmentSystem.Data
 {
     public class TaskManagmentDBContext : DbContext
     {
+        public TaskManagmentDBContext(DbContextOptions<TaskManagmentDBContext> options)
+        : base(options)
+        {
+        }
         public DbSet<User> Users { get; set; }
         public DbSet<Teams> Teams { get; set; }
         public DbSet<TeamMembers> TeamMembers { get; set; }
@@ -14,10 +18,6 @@ namespace TaskManagmentSystem.Data
         public DbSet<Attachments> Attachments { get; set; }
         public DbSet<Notes> Notes { get; set; }
         public DbSet<Attendance> Attendances { get; set; }
-        public TaskManagmentDBContext(DbContextOptions<TaskManagmentDBContext> options)
-           : base(options)
-        {
-        }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Attachments>()

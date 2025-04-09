@@ -70,6 +70,11 @@ namespace TaskManagmentSystem.Repositories
         {
             return await _dbContext.Attendances.Where(x => x.UserId == userId && x.Date == date.Date).FirstOrDefaultAsync();
         }
+        public async Task<Attendance> getAttendanceById(int Id)
+        {
+            return await _dbContext.Attendances.Where(x => x.Id == Id).FirstOrDefaultAsync();
+        }
+
 
         public async Task<bool> UpdateAttendance(Attendance attendance)
         {

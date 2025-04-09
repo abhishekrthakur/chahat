@@ -29,6 +29,17 @@ namespace TaskManagmentSystem.Controllers
             };
             return PartialView("~/Views/Dashboard/_EmployeeAttendancePartial.cshtml", tasklist);
         }
+
+        public async Task<IActionResult> GetEmployeeAttendancePartial()
+        {
+            var userId = HttpContext.Session.GetInt32("UserId");
+            var tasklist = new TaskListDTO()
+            {
+                Members = await _userRepository.GetAllUsers(),
+                Attendances = await _employeeRepository.GetAttendanceListByUserId((int)userId)
+            };
+            return PartialView("~/Views/Dashboard/_AdminAttendancePartial.cshtml", tasklist);
+        }
         public async Task<IActionResult> GetTimesheetPartial()
         {
             var userId = HttpContext.Session.GetInt32("UserId");
@@ -71,6 +82,28 @@ namespace TaskManagmentSystem.Controllers
                     attendanceList = attendanceListUpdated;
                 }
             }
+            return Json(attendanceList);
+        }
+
+        public async Task<JsonResult> GetAttendanceByUser(int userId)
+        {
+            var attendance = await _employeeRepository.GetAttendanceListByUserId(userId);
+            return Json(attendance);
+        }
+
+        public async Task<JsonResult> SubmitApprovedAttendance([FromBody] List<int> approvedIds)
+        {
+            foreach(var item in approvedIds)
+            {
+                var attendance = await _employeeRepository.getAttendanceById(item);
+                if (attendance.Status == "Pending")
+                {
+                    attendance.Status = "Approved";
+                    var isUpdated = await _employeeRepository.UpdateAttendance(attendance);
+                }
+            }
+            var userId = HttpContext.Session.GetInt32("UserId");
+            var attendanceList = await _employeeRepository.GetAttendanceListByUserId((int)userId);
             return Json(attendanceList);
         }
     }

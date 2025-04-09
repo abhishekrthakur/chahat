@@ -18,5 +18,6 @@ namespace TaskManagmentSystem.DTO
         public List<Tasks> ExceededDueDate { get; set; }
         public List<Teams> Teams { get; set; }
         public List<User> Members { get; set; }
+        public string Username { get; set; }
     }
 }

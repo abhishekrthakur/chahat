@@ -46,6 +46,7 @@ namespace TaskManagmentSystem.Controllers
                     HttpContext.Session.SetString("Role", "Team");
                     var tasklist = new TaskListDTO()
                     {
+                        Username = user.Username,
                         Members = await _userRepository.GetAllUsers(),
                         Teams = await _taskRepository.GetListofTeams(),
                         AssignedToMe = _taskRepository.GetUsersTask(user.UserId),
@@ -59,6 +60,7 @@ namespace TaskManagmentSystem.Controllers
                     HttpContext.Session.SetString("Role", "CompanyAdmin");
                     var admindata = await _taskRepository.GetAdminViewData(user.UserId);
                     admindata.Members = await _userRepository.GetAllUsers();
+                    admindata.Username = user.Username;
                     return View("~/Views/Dashboard/AdminDashboard.cshtml", admindata);
                 }
                 _toastNotification.Success("Logged In successfully!!");     

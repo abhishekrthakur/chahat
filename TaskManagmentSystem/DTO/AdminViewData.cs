@@ -20,4 +20,10 @@ namespace TaskManagmentSystem.DTO
         public List<User> Members { get; set; }
         public string Username { get; set; }
     }
+
+    public class SubmitAttendanceRequest
+    {
+        public int UserId { get; set; }
+        public List<int> ApprovedIds { get; set; }
+    }
 }

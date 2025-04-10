@@ -63,10 +63,10 @@
                                     '<td>' + formatTime(attendance.outTIme) + '</td>' +
                                     '<td>' + attendance.totalTime + '</td>' +
                                     '<td>' +
-                                    '<select class="form-control status-dropdown ' + statusClass + '">' +
-                                    '<option value="Pending" ' + (attendance.status === 'Pending' ? 'selected' : '') + '>Pending</option>' +
-                                    '<option value="Approved" ' + (attendance.status === 'Approved' ? 'selected' : '') + '>Approved</option>' +
-                                    '</select>' +
+                                        '<select class="form-control status-dropdown ' + statusClass + '" ' + (attendance.status === 'Approved' ? 'disabled' : '') + '>' +
+                                        '<option value="Pending" ' + (attendance.status === 'Pending' ? 'selected' : '') + '>Pending</option>' +
+                                        '<option value="Approved" ' + (attendance.status === 'Approved' ? 'selected' : '') + '>Approved</option>' +
+                                        '</select>' +
                                     '</td>' +
                                     '</tr>';
                             });
@@ -138,7 +138,10 @@
                 url: '/Employee/SubmitApprovedAttendance',
                 type: 'POST',
                 contentType: 'application/json',
-                data: JSON.stringify(approvedIds),
+                    data: JSON.stringify({
+                        userId: $('#userDropdown').val(),
+                        approvedIds: approvedIds
+                    }),
                     success: function (data) {
         alert('Approved attendance submitted successfully!');
 
@@ -165,10 +168,11 @@
                     '<td>' + formatTime(attendance.outTIme) + '</td>' +
                     '<td>' + attendance.totalTime + '</td>' +
                     '<td>' +
-                    '<select class="form-control status-dropdown ' + statusClass + '">' +
-                    '<option value="Pending" ' + (attendance.status === 'Pending' ? 'selected' : '') + '>Pending</option>' +
-                    '<option value="Approved" ' + (attendance.status === 'Approved' ? 'selected' : '') + '>Approved</option>' +
-                    '</select>' +
+                        '<select class="form-control status-dropdown ' + statusClass + '" ' + (attendance.status === 'Approved' ? 'disabled' : '') + '>' +
+                        '<option value="Pending" ' + (attendance.status === 'Pending' ? 'selected' : '') + '>Pending</option>' +
+                        '<option value="Approved" ' + (attendance.status === 'Approved' ? 'selected' : '') + '>Approved</option>' +
+                        '</select>'
+                         +
                     '</td>' +
                     '</tr>';
             });

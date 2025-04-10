@@ -35,7 +35,7 @@ namespace TaskManagmentSystem.Controllers
             var userId = HttpContext.Session.GetInt32("UserId");
             var tasklist = new TaskListDTO()
             {
-                Members = await _userRepository.GetAllUsers(),
+                Members = await _userRepository.GetAllNonAdminUsers(),
                 Attendances = await _employeeRepository.GetAttendanceListByUserId((int)userId)
             };
             return PartialView("~/Views/Dashboard/_AdminAttendancePartial.cshtml", tasklist);
@@ -75,6 +75,8 @@ namespace TaskManagmentSystem.Controllers
             if(userAttendance != null)
             {
                 userAttendance.OutTIme = DateTime.Now;
+                TimeSpan totalTime = userAttendance.OutTIme - userAttendance.InTime;
+                userAttendance.TotalTime = totalTime;
                 var isUpdated = await _employeeRepository.UpdateAttendance(userAttendance);
                 if(isUpdated)
                 {
@@ -91,9 +93,10 @@ namespace TaskManagmentSystem.Controllers
             return Json(attendance);
         }
 
-        public async Task<JsonResult> SubmitApprovedAttendance([FromBody] List<int> approvedIds)
+        [HttpPost]
+        public async Task<JsonResult> SubmitApprovedAttendance([FromBody] SubmitAttendanceRequest request)
         {
-            foreach(var item in approvedIds)
+            foreach (var item in request.ApprovedIds)
             {
                 var attendance = await _employeeRepository.getAttendanceById(item);
                 if (attendance.Status == "Pending")
@@ -102,8 +105,7 @@ namespace TaskManagmentSystem.Controllers
                     var isUpdated = await _employeeRepository.UpdateAttendance(attendance);
                 }
             }
-            var userId = HttpContext.Session.GetInt32("UserId");
-            var attendanceList = await _employeeRepository.GetAttendanceListByUserId((int)userId);
+            var attendanceList = await _employeeRepository.GetAttendanceListByUserId(request.UserId);
             return Json(attendanceList);
         }
     }

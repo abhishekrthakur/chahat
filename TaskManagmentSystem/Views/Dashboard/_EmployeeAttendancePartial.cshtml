@@ -40,8 +40,8 @@
                     <td>@attendance.Day</td>
                     <td>@attendance.InTime.ToString("HH:mm")</td>
                     <td>@(attendance.OutTIme.TimeOfDay == TimeSpan.Zero ? "00:00" : attendance.OutTIme.ToString("HH:mm"))</td>
-                    <td>@attendance.TotalTime</td>
-                    <td>@attendance.Status</td>
+                    <td>@string.Format("{0:%h}h {0:%m}m", attendance.TotalTime)</td>
+                    <td style="color:@(attendance.Status == "Approved" ? "green" : "red")">@attendance.Status</td>
                 </tr>
             }
         }
@@ -98,6 +98,16 @@
         return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
     }
 
+        function formatTotalTime(timeString) {
+        if (!timeString) return "-";
+
+        const parts = timeString.split(':');
+        const hours = parseInt(parts[0]);
+        const minutes = parseInt(parts[1]);
+
+        return `${hours}h ${minutes}m`;
+    }
+
     var hasCheckedInToday = @(hasCheckedInToday.ToString().ToLower());
     var hasCheckedOutToday = @(hasCheckedOutToday.ToString().ToLower());
     $(document).ready(function () {
@@ -128,8 +138,8 @@
                                 <td>${attendance.day}</td>
                                 <td>${formatTime(attendance.inTime)}</td>
                                 <td>${attendance.outTIme ? formatTime(attendance.outTIme) : '-'}</td>
-                                <td>${attendance.totalTime || '-'}</td>
-                                <td>${attendance.status}</td>
+                               <td>${formatTotalTime(attendance.totalTime)}</td>
+                                <td style="color:${attendance.status === 'Approved' ? 'green' : 'red'}">${attendance.status}</td>
                             </tr>`;
                             tbody.append(row);
                         });
@@ -163,8 +173,8 @@
                                 <td>${attendance.day}</td>
                                 <td>${formatTime(attendance.inTime)}</td>
                                 <td>${attendance.outTIme ? formatTime(attendance.outTIme) : '-'}</td>
-                                <td>${attendance.totalTime || '-'}</td>
-                                <td>${attendance.status}</td>
+                                <td>${formatTotalTime(attendance.totalTime)}</td>
+                               <td style="color:${attendance.status === 'Approved' ? 'green' : 'red'}">${attendance.status}</td>
                             </tr>`;
                             tbody.append(row);
                         });

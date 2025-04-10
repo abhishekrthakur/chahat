@@ -75,5 +75,11 @@ namespace TaskManagmentSystem.Repositories
             var userList = await _dbContext.Users.ToListAsync();
             return userList;
         }
+
+        public async Task<List<User>> GetAllNonAdminUsers()
+        {
+            var userList = await _dbContext.Users.Where(x => x.UserRole.ToLower() != "companyadmin").ToListAsync();
+            return userList;
+        }
     }
 }

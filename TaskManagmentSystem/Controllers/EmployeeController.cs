@@ -40,16 +40,7 @@ namespace TaskManagmentSystem.Controllers
             };
             return PartialView("~/Views/Dashboard/_AdminAttendancePartial.cshtml", tasklist);
         }
-        public async Task<IActionResult> GetTimesheetPartial()
-        {
-            var userId = HttpContext.Session.GetInt32("UserId");
-            var tasklist = new TaskListDTO()
-            {
-                Members = await _userRepository.GetAllAdmins()
-            };
-            return PartialView("~/Views/Dashboard/_EmployeeTimesheetPartial.cshtml", tasklist);
-        }
-
+        
         public async Task<JsonResult> CheckIn(int userId)
         {
             var attendace = new Attendance();

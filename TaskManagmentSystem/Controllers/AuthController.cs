@@ -118,9 +118,11 @@ namespace TaskManagmentSystem.Controllers
 
         public async Task<IActionResult> AdminDashboard()
         {
+            
             var userId = HttpContext.Session.GetInt32("UserId");
             var user = _userRepository.GetUserByUserId((int)userId);
             var admindata = await _taskRepository.GetAdminViewData(user.UserId);
+            admindata.Username = user.Username;
             admindata.Members = await _userRepository.GetAllUsers();
             return View("~/Views/Dashboard/AdminDashboard.cshtml", admindata);
         }

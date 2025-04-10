@@ -103,8 +103,10 @@ namespace TaskManagmentSystem.Controllers
         public async Task<IActionResult> Dashboard()
         {
             var userId = HttpContext.Session.GetInt32("UserId");
+            var user = _userRepository.GetUserByUserId((int)userId);
             var tasklist = new TaskListDTO()
             {
+                Username = user.Username,
                 Members = await _userRepository.GetAllUsers(),
                 Teams = await _taskRepository.GetListofTeams(),
                 AssignedToMe = _taskRepository.GetUsersTask((int)userId),

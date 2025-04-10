@@ -11,17 +11,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 var connectionString = builder.Configuration["AppConfig:ConnectionString"];
-
-//builder.Configuration.AddAzureAppConfiguration(options =>
-//{
-//    options.Connect(connectionString)
-//           .ConfigureKeyVault(kv =>
-//           {
-//               kv.SetCredential(new DefaultAzureCredential());
-//           })
-//           .Select(KeyFilter.Any, LabelFilter.Null);
-//});
-
 var connStrDb = builder.Configuration.GetConnectionString("DbConnectionString");
 builder.Services.AddDbContext<TaskManagmentDBContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DbConnectionString")));

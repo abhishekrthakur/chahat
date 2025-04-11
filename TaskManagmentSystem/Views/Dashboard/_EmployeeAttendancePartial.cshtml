@@ -7,7 +7,7 @@
     var hasCheckedOutToday = Model.Attendances != null && Model.Attendances.Any(a => a.Date.Date == today && a.OutTIme.TimeOfDay != TimeSpan.Zero);
 }
 
-<h2>Attendance History</h2>
+<h2 style="margin-top:10px">Attendance History</h2>
 
 <!-- Buttons (Time will update via JS) -->
 <div class="mb-3 d-flex gap-2">

@@ -15,7 +15,7 @@
 
 
 <div class="form-group">
-    <h5>Attendance History</h5>
+    <h2 style="margin-top:10px">Attendance History</h2>
     <label for="userDropdown">Select User</label>
     <select id="userDropdown" class="form-control">
         <option value="">-- Select Member --</option>
@@ -31,6 +31,16 @@
 </div>
 
 <script>
+    function formatTotalTime(timeString) {
+        if (!timeString) return "-";
+
+        const parts = timeString.split(':');
+        const hours = parseInt(parts[0]);
+        const minutes = parseInt(parts[1]);
+
+        return `${hours}h ${minutes}m`;
+    }
+
     $(document).ready(function () {
         $('#userDropdown').change(function () {
             var selectedUserId = $(this).val();
@@ -61,7 +71,7 @@
                                     '<td>' + attendance.day + '</td>' +
                                     '<td>' + formatTime(attendance.inTime) + '</td>' +
                                     '<td>' + formatTime(attendance.outTIme) + '</td>' +
-                                    '<td>' + attendance.totalTime + '</td>' +
+                                    '<td>' + formatTotalTime(attendance.totalTime) + '</td>' +
                                     '<td>' +
                                         '<select class="form-control status-dropdown ' + statusClass + '" ' + (attendance.status === 'Approved' ? 'disabled' : '') + '>' +
                                         '<option value="Pending" ' + (attendance.status === 'Pending' ? 'selected' : '') + '>Pending</option>' +
@@ -166,7 +176,7 @@
                     '<td>' + attendance.day + '</td>' +
                     '<td>' + formatTime(attendance.inTime) + '</td>' +
                     '<td>' + formatTime(attendance.outTIme) + '</td>' +
-                    '<td>' + attendance.totalTime + '</td>' +
+                    '<td>' + formatTotalTime(attendance.totalTime) + '</td>' +
                     '<td>' +
                         '<select class="form-control status-dropdown ' + statusClass + '" ' + (attendance.status === 'Approved' ? 'disabled' : '') + '>' +
                         '<option value="Pending" ' + (attendance.status === 'Pending' ? 'selected' : '') + '>Pending</option>' +

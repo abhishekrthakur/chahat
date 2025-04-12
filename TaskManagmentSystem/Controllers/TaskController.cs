@@ -22,6 +22,7 @@ namespace TaskManagmentSystem.Controllers
         public async Task<IActionResult> Index()
         {
             var userId = HttpContext.Session.GetInt32("UserId");
+            var user = _userRepository.GetUserByUserId((int)userId);
             if (!userId.HasValue)
             {
                 _toastNotification.Warning("Session Expire, Login Again !!!");
@@ -29,6 +30,7 @@ namespace TaskManagmentSystem.Controllers
             }
             var tasklist = new TaskListDTO()
             {
+                Username = user.Username,
                 Members = await _userRepository.GetAllUsers(),
                 Teams = await _taskRepository.GetListofTeams(),
                 AssignedToMe = _taskRepository.GetUsersTask(userId.Value),
@@ -40,12 +42,14 @@ namespace TaskManagmentSystem.Controllers
         public async Task<IActionResult> AdminView()
         {
             var userId = HttpContext.Session.GetInt32("UserId");
+            var user = _userRepository.GetUserByUserId((int)userId);
             if (!userId.HasValue)
             {
                 _toastNotification.Warning("Session Expire, Login Again !!!");
                 return View("~/Views/AuthView/Login.cshtml");
             }
             var admindata = await _taskRepository.GetAdminViewData(userId.Value);
+            admindata.Username = user.Username;
             admindata.Members = await _userRepository.GetAllUsers();
             return View("~/Views/Dashboard/AdminDashboard.cshtml", admindata);
         }
